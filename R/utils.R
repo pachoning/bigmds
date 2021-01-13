@@ -18,5 +18,20 @@ perform_procrustes <- function(x, target, matrix_to_transform, translation, dila
   }
 
   return(dilation_factor * matrix_to_transform %*% procrustes_result$R + translation_matrix)
+}
 
+classical_mds <- function(x, k, return_distance_matrix = FALSE) {
+
+  mds <- list()
+  dist_matrix <- stats::dist(x = x)
+  mds_result <- stats::cmdscale(d = dist_matrix, k = k, eig = TRUE)
+
+  mds$points <- mds_result$points
+  mds$eigen <- mds_result$eig[1:k]
+
+  if (return_distance_matrix) {
+    mds$distance <- as.matrix(dist_matrix)
+  }
+
+  return(mds)
 }
