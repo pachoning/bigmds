@@ -1,16 +1,32 @@
 Package: bigmds
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Multidimensional Scaling for Big Data
+Version: 0.0.0.9
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    c(
+    person(given = "Cristian",
+           family = "Pachón García",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+           email = "cc.pachon@gmail.com",
+           comment = c(ORCID = "0000-0001-9518-4874")),
+    person(given = "Pedro",
+           family = "Delicado",
+           role = c("aut"),
+           email = "pedro.delicado@upc.edu",
+           comment = c(ORCID = "0000-0003-3933-4852"))
+    )
+Description: We present a set of algorithms for Multidimensional Scaling (MDS) to be used with large datasets. 
+  MDS is a statistic tool for reduction of dimensionality, using as input a distance matrix of dimensions n × n. 
+  When n is large, classical algorithms suffer from computational problems and MDS configuration can not be obtained.
+  With this package, we address these problems by means of three algorithms: Divide and Conquer MDS, Fast MDS and 
+  MDS based on Gower interpolation. The main idea of these methods is based on partitioning the dataset into small 
+  pieces, where classical methods can work.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Imports: 
+    MCMCpack
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
