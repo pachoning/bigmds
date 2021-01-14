@@ -25,3 +25,6 @@ Returns MDS based on Fast MDS algorithm as well as the first k eigenvalues.
 \description{
 Perfroms Multidimensional Scaling based on Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei. (2006).
 }
+\seealso{
+\url{https://arxiv.org/abs/2007.11919}
+}

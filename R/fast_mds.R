@@ -26,13 +26,15 @@ get_partitions_for_fast <- function(n, l, s, k) {
 #'@description Perfroms Multidimensional Scaling based on Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei. (2006).
 #'@param x Data matrix.
 #'@param l The highest value where classical MDS can be computed efficiently.
-#'@param s Number of sampling points. It should be 1 + estimated data dimension.
+#'@param s Number of sampling points. It should be 2 x estimated data dimension.
 #'@param k Number of principal coordinates.
 #'@return Returns MDS based on Fast MDS algorithm as well as the first k eigenvalues.
 #' \describe{
 #'   \item{points}{MDS}
 #'   \item{eigen}{eigenvalues}
 #' }
+#' @seealso
+#' \url{https://arxiv.org/abs/2007.11919}
 fast_mds <- function(x, l, s, k) {
 
   has_row_names <- !is.null(row.names(x))
