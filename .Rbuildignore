@@ -4,3 +4,4 @@
 .Rhistory
 ^LICENSE\.md$
 ^README\.Rmd$
+^cran-comments\.md$
