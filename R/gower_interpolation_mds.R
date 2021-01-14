@@ -1,5 +1,5 @@
 #'@title MDS based on Gower interpolation formula
-#'@description Perfroms Multidimensional Scaling based on Gower interpolation formula.
+#'@description Performs Multidimensional Scaling based on Gower interpolation formula.
 #'@param x Data matrix.
 #'@param l The highest value where classical MDS can be computed efficiently.
 #'@param k Number of principal coordinates.

@@ -23,7 +23,7 @@ get_partitions_for_fast <- function(n, l, s, k) {
 }
 
 #'@title Fast MDS
-#'@description Perfroms Multidimensional Scaling based on Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei. (2006).
+#'@description Performs Multidimensional Scaling based on Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei. (2006).
 #'@param x Data matrix.
 #'@param l The highest value where classical MDS can be computed efficiently.
 #'@param s Number of sampling points. It should be 2 x estimated data dimension.

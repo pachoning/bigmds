@@ -23,7 +23,7 @@ Returns MDS based on Fast MDS algorithm as well as the first k eigenvalues.
 }
 }
 \description{
-Perfroms Multidimensional Scaling based on Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei. (2006).
+Performs Multidimensional Scaling based on Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei. (2006).
 }
 \examples{
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)

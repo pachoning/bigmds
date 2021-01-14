@@ -23,7 +23,7 @@ Returns MDS based on Divide and Conquer MDS as well as the first k eigenvalues.
 }
 }
 \description{
-Perfroms Multidimensional Scaling based on Delicado and Pachon-Garcia, 2020.
+Performs Multidimensional Scaling based on Delicado and Pachon-Garcia, 2020.
 }
 \examples{
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)

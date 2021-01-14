@@ -21,7 +21,7 @@ Returns MDS based on Fast MDS algorithm as well as the first k eigenvalues.
 }
 }
 \description{
-Perfroms Multidimensional Scaling based on Gower interpolation formula.
+Performs Multidimensional Scaling based on Gower interpolation formula.
 }
 \examples{
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)

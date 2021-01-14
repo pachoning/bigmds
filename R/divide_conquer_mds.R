@@ -23,7 +23,7 @@ get_partitions_for_divide_conquer <- function(n, l, s, k) {
 }
 
 #'@title Divide and Conquer MDS
-#'@description Perfroms Multidimensional Scaling based on Delicado and Pachon-Garcia, 2020. 
+#'@description Performs Multidimensional Scaling based on Delicado and Pachon-Garcia, 2020. 
 #'@param x Data matrix.
 #'@param l The highest value where classical MDS can be computed efficiently.
 #'@param s Number of sampling points. It should be 2 x estimated data dimension.
