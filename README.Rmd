@@ -67,7 +67,6 @@ With the implementation of *classical MDS*, it is not possible to obtain a MDS c
 problems. Try it yourself!
 
 ```{r, example2, eval=FALSE}
-library(bigmds)
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
 dist_matrix <- stats::dist(x = x)
 mds_result <- stats::cmdscale(d = dist_matrix, k = 2, eig = TRUE)
