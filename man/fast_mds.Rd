@@ -11,7 +11,7 @@ fast_mds(x, l, s, k)
 
 \item{l}{The highest value where classical MDS can be computed efficiently.}
 
-\item{s}{Number of sampling points. It should be 1 + estimated data dimension.}
+\item{s}{Number of sampling points. It should be 2 x estimated data dimension.}
 
 \item{k}{Number of principal coordinates.}
 }
