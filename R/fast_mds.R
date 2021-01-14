@@ -1,18 +1,18 @@
 get_partitions_for_fast <- function(n, l, s, k) {
 
-  p <- ceiling(l/s)
-  min_sample_size <- max(k+2, s)
+  p <- ceiling(l / s)
+  min_sample_size <- max(k + 2, s)
 
-  if (ceiling(n/p) < min_sample_size) {
+  if (ceiling(n / p) < min_sample_size) {
     stop("Too many columns and few observations to perform Fast MDS")
   }
 
-  partition <- sort(rep(x = 1:p, length.out = n, each = ceiling(n/p)))
+  partition <- sort(rep(x = 1:p, length.out = n, each = ceiling(n / p)))
   p <- max(partition)
 
   while (p <= n & min(table(partition)) < min_sample_size) {
     p <- p + 1
-    partition <- sort(rep(x = 1:p, length.out = n, each = ceiling(n/p)))
+    partition <- sort(rep(x = 1:p, length.out = n, each = ceiling(n / p)))
   }
 
   if (min(table(partition)) < min_sample_size) {
@@ -51,7 +51,7 @@ fast_mds <- function(x, l, s, k) {
   #If possible to run classical MDS on the whole matrix, run it
   if (nrow(x) <= l) {
     mds <- classical_mds(x = x, k = k)
-    mds$eigen <- mds$eigen/length(mds$eigen)
+    mds$eigen <- mds$eigen / length(mds$eigen)
 
     if (!has_row_names) {
       row.names(x) <- NULL
@@ -89,7 +89,7 @@ fast_mds <- function(x, l, s, k) {
     }
 
     # Perform the mean for the eigenvalues
-    eigen <- eigen/p
+    eigen <- eigen / p
 
     # Get M_align by getting the sampled points
     ind <- unlist(sampling_points)
