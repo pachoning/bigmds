@@ -1,3 +1,9 @@
+test_that("Partitions for Fast returns a valid partition dataset", {
+  partition <- get_partitions_for_fast(n = 1000, l = 100, s = 5, k = 10)
+  p <- max(partition)
+  expect_equal(p, 20)
+})
+
 test_that("Fast MDS returns a valid MDS configuration", {
   x <- matrix(data = rnorm(4*1000, sd = 10), nrow = 1000)
   cmds <- fast_mds(x = x, l = 100, s = 8, k = 4)
