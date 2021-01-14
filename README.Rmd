@@ -63,8 +63,8 @@ head(g_mds$points)
 g_mds$eigen
 ```
 
-With the implementation of *classical MDS*, it is not possible to abtain a MDS configuration due to computation problems. 
-Try it yourself!
+With the implementation of *classical MDS*, it is not possible to obtain a MDS configuration due to computational 
+problems. Try it yourself!
 
 ```{r, example2, eval=FALSE}
 library(bigmds)
