@@ -1,4 +1,4 @@
-test_that("Procrustes works", {
+test_that("Procrustes aligns matrices", {
   x <- matrix(data = c(1, 2, 3, 4), nrow = 2)
   y <- matrix(data = c(-1, -2, -3, -4), nrow = 2)
   x_proc <- perform_procrustes(x=x, target=y, matrix_to_transform=x, translation=FALSE, dilation=FALSE)
@@ -6,7 +6,7 @@ test_that("Procrustes works", {
   expect_lt(max_error, 1e-6)
 })
 
-test_that("Classical MDS works", {
+test_that("Classical MDS returns a valid MDS configuration", {
   x <- matrix(data = rnorm(4*100, sd = 10), nrow = 100)
   cmds <- classical_mds(x = x, k = 4)
   cmds_proc <- perform_procrustes(x = cmds$points, target = x, matrix_to_transform = cmds$points, 
