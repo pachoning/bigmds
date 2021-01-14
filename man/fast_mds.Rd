@@ -25,6 +25,12 @@ Returns MDS based on Fast MDS algorithm as well as the first k eigenvalues.
 \description{
 Perfroms Multidimensional Scaling based on Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei. (2006).
 }
+\examples{
+x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
+cmds <- fast_mds(x = x, l = 100, s = 8, k = 2)
+head(cmds$points)
+cmds$eigen
+}
 \seealso{
 \url{https://arxiv.org/abs/2007.11919}
 }

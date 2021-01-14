@@ -33,6 +33,12 @@ get_partitions_for_fast <- function(n, l, s, k) {
 #'   \item{points}{MDS}
 #'   \item{eigen}{eigenvalues}
 #' }
+#' @export
+#' @examples
+#' x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
+#' cmds <- fast_mds(x = x, l = 100, s = 8, k = 2)
+#' head(cmds$points)
+#' cmds$eigen
 #' @seealso
 #' \url{https://arxiv.org/abs/2007.11919}
 fast_mds <- function(x, l, s, k) {
