@@ -1,6 +1,6 @@
 Package: bigmds
 Title: Multidimensional Scaling for Big Data
-Version: 0.0.0.9
+Version: 0.0.1
 Authors@R: 
     c(
     person(given = "Cristian",
