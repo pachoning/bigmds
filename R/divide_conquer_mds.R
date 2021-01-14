@@ -1,9 +1,9 @@
 get_partitions_for_divide_conquer <- function(n, l, s, k) {
 
-  p <- ceiling(n/(l-s))
-  min_sample_size <- max(k+2, s)
+  p <- ceiling(n / (l-s))
+  min_sample_size <- max(k + 2, s)
 
-  index_partition <- sort(rep(x = 1:p, length.out = n, each = ceiling(n/p)))
+  index_partition <- sort(rep(x = 1:p, length.out = n, each = ceiling(n / p)))
   p <- max(index_partition)
 
   if (mean(table(index_partition)) < min_sample_size) {
@@ -12,7 +12,7 @@ get_partitions_for_divide_conquer <- function(n, l, s, k) {
 
   while ((min(table(index_partition)) < min_sample_size) & (p <= n)) {
     p <- p + 1
-    index_partition <- sort(rep(x = 1:p, length.out = n, each = ceiling(n/p)))
+    index_partition <- sort(rep(x = 1:p, length.out = n, each = ceiling(n / p)))
   }
 
   if (min(table(index_partition)) < min_sample_size) {
@@ -47,7 +47,7 @@ divide_conquer_mds <- function(x, l, s, k) {
 
   if (nrow(x) <= l) {
     mds_to_return <- classical_mds(x = x, k = k)
-    mds_to_return$eigen <- mds_to_return$eigen/length(mds_to_return$eigen)
+    mds_to_return$eigen <- mds_to_return$eigen / length(mds_to_return$eigen)
   } else {
     index_partition <- get_partitions_for_divide_conquer(n = nrow(x), l = l, s = s, k = k)
     p <- max(index_partition)
@@ -66,7 +66,7 @@ divide_conquer_mds <- function(x, l, s, k) {
         
         list_classical_mds <- classical_mds(x = x_current, k = k) 
         cum_mds <- list_classical_mds$points
-        eigen <- list_classical_mds$eigen/length(list_classical_mds$eigen)
+        eigen <- list_classical_mds$eigen / length(list_classical_mds$eigen)
         min_len <- length(eigen)
       } else {
 
@@ -80,7 +80,7 @@ divide_conquer_mds <- function(x, l, s, k) {
                                                  translation = FALSE, dilation = FALSE)
         cum_mds <- rbind(cum_mds, mds_current_aligned)
         min_len <- pmin(min_len, length(list_mds_both$eigen))
-        eigen <- eigen[1:min_len] + (list_mds_both$eigen[1:min_len]/length(list_mds_both$eigen))
+        eigen <- eigen[1:min_len] + (list_mds_both$eigen[1:min_len] / length(list_mds_both$eigen))
       }
 
       rn_subsample_previous <- sample(x = row_names_current, size = s, replace = FALSE)
@@ -88,7 +88,7 @@ divide_conquer_mds <- function(x, l, s, k) {
     }
 
     # Perform the mean for the eigenvalues
-    eigen <- eigen/p
+    eigen <- eigen / p
 
     # Divide by the number of observations
     mds_to_return <- list(points = cum_mds, eigen = eigen)
