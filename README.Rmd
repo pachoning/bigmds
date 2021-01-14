@@ -1,0 +1,74 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# bigmds
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+We present a set of algorithms for *Multidimensional Scaling (MDS)* to be used with large datasets. *MDS* is a statistic 
+tool for reduction of dimensionality, using as input a distance matrix of dimensions *n × n*. When *n* is large, 
+classical algorithms suffer from computational problems and *MDS* configuration can not be obtained.
+
+With this package, we address these problems by means of three algorithms: 
+
+- Divide and Conquer MDS
+- Fast MDS
+- MDS based on Gower interpolation
+
+The main idea of these methods is based on partitioning the dataset into small pieces, where classical methods can work.
+*Fast MDS* was developed by *Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei. (2006)*, whereas 
+*Divide and Conquer MDS* and *MDS based on Gower interpolation* were developed by *Delicado and Pachon-Garcia, 2020.*
+
+To obtain more information, please read this [paper](https://arxiv.org/abs/2007.11919).
+
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("pachoning/bigmds")
+```
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(bigmds)
+x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
+
+dc_mds <- divide_conquer_mds(x = x, l = 100, s = 8, k = 2)
+head(dc_mds$points)
+dc_mds$eigen
+
+f_mds <- fast_mds(x = x, l = 100, s = 8, k = 2)
+head(f_mds$points)
+f_mds$eigen
+
+g_mds <- gower_interpolation_mds(x = x, l = 100, k = 2)
+head(g_mds$points)
+g_mds$eigen
+```
+
+With the implementation of *classical MDS*, it is not possible to abtain a MDS configuration due to computation problems. 
+Try it yourself!
+
+```{r, example2, eval=FALSE}
+library(bigmds)
+x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
+dist_matrix <- stats::dist(x = x)
+mds_result <- stats::cmdscale(d = dist_matrix, k = 2, eig = TRUE)
+```
