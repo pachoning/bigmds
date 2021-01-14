@@ -27,7 +27,7 @@ Perfroms Multidimensional Scaling based on Delicado and Pachon-Garcia, 2020.
 }
 \examples{
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-cmds <- divide_conquer(x = x, l = 100, s = 8, k = 2)
+cmds <- divide_conquer_mds(x = x, l = 100, s = 8, k = 2)
 head(cmds$points)
 cmds$eigen
 }

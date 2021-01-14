@@ -36,7 +36,7 @@ get_partitions_for_divide_conquer <- function(n, l, s, k) {
 #' @export
 #' @examples
 #' x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-#' cmds <- divide_conquer(x = x, l = 100, s = 8, k = 2)
+#' cmds <- divide_conquer_mds(x = x, l = 100, s = 8, k = 2)
 #' head(cmds$points)
 #' cmds$eigen
 #' @seealso
