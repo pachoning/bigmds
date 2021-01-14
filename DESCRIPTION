@@ -27,7 +27,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports: 
     MCMCpack,
-    stats
+    stats,
+    pdist
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
