@@ -36,6 +36,12 @@ To obtain more information, please read this [paper](https://arxiv.org/abs/2007.
 
 ## Installation
 
+You can install directly from CRAN with:
+
+``` r
+# install.packages("bigmds")
+```
+
 You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
