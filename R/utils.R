@@ -1,24 +1,48 @@
-perform_procrustes <- function(x, target, matrix_to_transform, translation, dilation) {
-
-  procrustes_result <- MCMCpack::procrustes(X = x, Xstar = target, translation = translation, dilation = dilation)
-
+perform_procrustes <- function(x, target, matrix_to_transform, translation = FALSE, dilation = FALSE) {
+  
+  n_row <- nrow(x)
+  n_col <- ncol(x)
+  
+  if (n_row != nrow(target)) {
+    stop("x and target do not have same number of rows.\n")
+  }
+  
+  if (n_col != ncol(target)) {
+    stop("x and target do not have same number of columns.\n")
+  }
+  
+  diag_matrix <- diag(n_row)
   if (translation) {
-    trans <- procrustes_result$tt
-  } else {
-    trans <- matrix(data = 0, nrow = ncol(x), ncol = 1)
+    diag_matrix <- diag(n_row) - 1/n_row * matrix(1, n_row, n_row)
   }
-
-  ones_vector <- matrix(data = 1, nrow = nrow(matrix_to_transform), ncol = 1)
-  translation_matrix <- ones_vector %*% t(trans)
-
+  
+  matrix_prod <- t(target) %*% diag_matrix %*% x
+  svd_results <- svd(matrix_prod)
+  rotation_matrix <- svd_results$v %*% t(svd_results$u)
+  
+  dilation_factor <- 1
   if (dilation) {
-    dilation_factor <- procrustes_result$s
-  } else {
-    dilation_factor <- 1
+    mat1 <- t(target) %*% diag_matrix %*% x %*% rotation_matrix
+    mat2 <- t(x) %*% diag_matrix %*% x
+    num <- 0
+    denom <- 0
+    for (i in 1:n_col) {
+      num <- num + mat1[i, i]
+      denom <- denom + mat2[i, i]
+    }
+    dilation_factor <- num/denom
   }
-
-  return(dilation_factor * matrix_to_transform %*% procrustes_result$R + translation_matrix)
+  
+  translation_matrix <- matrix(0, n_col, 1)
+  if (translation) {
+    translation_matrix <- 1/n_row * t(target - dilation_factor * x %*% rotation_matrix) %*% matrix(1, n_row, 1)
+  }
+  
+  translation_matrix <- matrix(translation_matrix, n_row, n_col, byrow = TRUE)
+  
+  return(dilation_factor * matrix_to_transform %*% rotation_matrix + translation_matrix)
 }
+
 
 classical_mds <- function(x, k, return_distance_matrix = FALSE) {
 
