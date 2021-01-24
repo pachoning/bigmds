@@ -56,7 +56,7 @@ This is a basic example which shows you how to solve a common problem:
 library(bigmds)
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
 
-dc_mds <- divide_conquer_mds(x = x, l = 100, s = 8, k = 2)
+dc_mds <- divide_conquer_mds(x = x, l = 100, num_stitching_points = 8, k = 2)
 head(dc_mds$points)
 dc_mds$eigen
 
