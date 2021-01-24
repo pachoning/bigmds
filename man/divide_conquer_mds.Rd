@@ -4,14 +4,15 @@
 \alias{divide_conquer_mds}
 \title{Divide and Conquer MDS}
 \usage{
-divide_conquer_mds(x, l, s, k)
+divide_conquer_mds(x, l, num_stitching_points, k)
 }
 \arguments{
 \item{x}{Data matrix.}
 
 \item{l}{The highest value where classical MDS can be computed efficiently.}
 
-\item{s}{Number of sampling points. It should be 2 x estimated data dimension.}
+\item{num_stitching_points}{Number of stitching points used to align the MDS solutions obtained by the division of x
+into small groups of matrices. We recommend to use 2 * k.}
 
 \item{k}{Number of principal coordinates.}
 }
@@ -27,7 +28,7 @@ Performs Multidimensional Scaling based on Delicado and Pachon-Garcia, 2020.
 }
 \examples{
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-cmds <- divide_conquer_mds(x = x, l = 100, s = 8, k = 2)
+cmds <- divide_conquer_mds(x = x, l = 100, num_stitching_points = 8, k = 2)
 head(cmds$points)
 cmds$eigen
 }
