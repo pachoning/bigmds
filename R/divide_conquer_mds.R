@@ -1,7 +1,7 @@
-get_partitions_for_divide_conquer <- function(n, l, s, k) {
+get_partitions_for_divide_conquer <- function(n, l, num_stitching_points, k) {
 
-  p <- ceiling(n / (l-s))
-  min_sample_size <- max(k + 2, s)
+  p <- ceiling(n / (l-num_stitching_points))
+  min_sample_size <- max(k + 2, num_stitching_points)
 
   index_partition <- sort(rep(x = 1:p, length.out = n, each = ceiling(n / p)))
   p <- max(index_partition)
@@ -26,7 +26,8 @@ get_partitions_for_divide_conquer <- function(n, l, s, k) {
 #'@description Performs Multidimensional Scaling based on Delicado and Pachon-Garcia, 2020. 
 #'@param x Data matrix.
 #'@param l The highest value where classical MDS can be computed efficiently.
-#'@param s Number of sampling points. It should be 2 x estimated data dimension.
+#'@param num_stitching_points Number of stitching points used to align the MDS solutions obtained by the division of x 
+#'into small groups of matrices. We recommend to use 2 * k.
 #'@param k Number of principal coordinates.
 #'@return Returns MDS based on Divide and Conquer MDS as well as the first k eigenvalues.
 #' \describe{
@@ -36,12 +37,12 @@ get_partitions_for_divide_conquer <- function(n, l, s, k) {
 #' @export
 #' @examples
 #' x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-#' cmds <- divide_conquer_mds(x = x, l = 100, s = 8, k = 2)
+#' cmds <- divide_conquer_mds(x = x, l = 100, num_stitching_points = 8, k = 2)
 #' head(cmds$points)
 #' cmds$eigen
 #' @seealso
 #' \url{https://arxiv.org/abs/2007.11919}
-divide_conquer_mds <- function(x, l, s, k) {
+divide_conquer_mds <- function(x, l, num_stitching_points, k) {
   initial_row_names <- row.names(x)
   row.names(x) <- 1:nrow(x)
 
@@ -49,13 +50,13 @@ divide_conquer_mds <- function(x, l, s, k) {
     mds_to_return <- classical_mds(x = x, k = k)
     mds_to_return$eigen <- mds_to_return$eigen / length(mds_to_return$eigen)
   } else {
-    index_partition <- get_partitions_for_divide_conquer(n = nrow(x), l = l, s = s, k = k)
+    index_partition <- get_partitions_for_divide_conquer(n = nrow(x), l = l, num_stitching_points = num_stitching_points, k = k)
     p <- max(index_partition)
 
     min_len = NA
     eigen <- c()
 
-    # Calculate mds for each partition and take s poits from each subsample
+    # Calculate mds for each partition and take num_stitching_points poits from each subsample
     for (i in 1:p) {
 
       indexes_current <- which(index_partition == i)
@@ -83,7 +84,7 @@ divide_conquer_mds <- function(x, l, s, k) {
         eigen <- eigen[1:min_len] + (list_mds_both$eigen[1:min_len] / length(list_mds_both$eigen))
       }
 
-      rn_subsample_previous <- sample(x = row_names_current, size = s, replace = FALSE)
+      rn_subsample_previous <- sample(x = row_names_current, size = num_stitching_points, replace = FALSE)
 
     }
 
