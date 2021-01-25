@@ -7,23 +7,39 @@
 fast_mds(x, l, s, k)
 }
 \arguments{
-\item{x}{Data matrix.}
+\item{x}{Dataset.}
 
-\item{l}{The highest value where classical MDS can be computed efficiently.}
+\item{l}{The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes
+\code{cmdscale()} be run without any computational issues.}
 
-\item{s}{Number of sampling points. It should be 2 x estimated data dimension.}
+\item{s}{Number of sampling points. Recommended value: \emph{2·k}.}
 
 \item{k}{Number of principal coordinates.}
 }
 \value{
-Returns MDS based on Fast MDS algorithm as well as the first k eigenvalues.
+Returns a list containing the following elements:
 \describe{
-\item{points}{MDS}
-\item{eigen}{eigenvalues}
+\item{points}{A matrix that consists of \emph{k} columns corresponding to the MDS coordinates.}
+\item{eigen}{The first \emph{k} eigenvalues.}
 }
 }
 \description{
-Performs Multidimensional Scaling based on Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei. (2006).
+Performs \emph{Multidimensional Scaling} for big datasets. This method can compute a MDS configuration
+even when the dataset is so large that classical MDS methods (\code{cmdscale}) can not be run due to computational
+problems.
+}
+\details{
+In order to obtain a MDS configuration for the entire matrix \emph{x}, it is partitioned into \emph{p} submatrices.
+
+For every partition, it is calculated a MDS configuration. The \emph{p} MDS configurations are stitched by sampling \emph{s}
+points for every individual solution and puting them into a matrix \emph{M}.
+
+After that, a MDS configuration for \emph{M} is obtained. So, there are 2 configurations for the \emph{s} points: one from
+performing MDS over every partition and another one from \emph{M}. This allows to compute Procrustes (alignment method) so
+that all the MDS solutions are aligned.
+
+This method is applied recursively until the size of every partition is such that \code{cmdscale} function can be computed
+efficiently.
 }
 \examples{
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
@@ -31,6 +47,8 @@ cmds <- fast_mds(x = x, l = 100, s = 8, k = 2)
 head(cmds$points)
 cmds$eigen
 }
-\seealso{
-\url{https://arxiv.org/abs/2007.11919}
+\references{
+Yang, Tynia and Liu, Jinze and Mcmillan, Leonard and Wang, Wei (2006).
+
+Borg and Groenen (1997). \emph{Modern Multidimensional Scaling}. New York: Springer. pp. 340-342.
 }

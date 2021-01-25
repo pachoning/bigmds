@@ -23,24 +23,40 @@ get_partitions_for_fast <- function(n, l, s, k) {
 }
 
 #'@title Fast MDS
-#'@description Performs Multidimensional Scaling based on Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei. (2006).
-#'@param x Data matrix.
-#'@param l The highest value where classical MDS can be computed efficiently.
-#'@param s Number of sampling points. It should be 2 x estimated data dimension.
+#'@description Performs *Multidimensional Scaling* for big datasets. This method can compute a MDS configuration 
+#'even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run due to computational 
+#'problems.
+#'@details In order to obtain a MDS configuration for the entire matrix *x*, it is partitioned into *p* submatrices. 
+#'
+#'For every partition, it is calculated a MDS configuration. The *p* MDS configurations are stitched by sampling *s*
+#'points for every individual solution and puting them into a matrix *M*.
+#'
+#'After that, a MDS configuration for *M* is obtained. So, there are 2 configurations for the *s* points: one from 
+#'performing MDS over every partition and another one from *M*. This allows to compute Procrustes (alignment method) so 
+#'that all the MDS solutions are aligned.
+#'
+#'This method is applied recursively until the size of every partition is such that `cmdscale` function can be computed
+#'efficiently.
+#'@param x Dataset.
+#'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes 
+#'`cmdscale()` be run without any computational issues.
+#'@param s Number of sampling points. Recommended value: *2·k*.
 #'@param k Number of principal coordinates.
-#'@return Returns MDS based on Fast MDS algorithm as well as the first k eigenvalues.
-#' \describe{
-#'   \item{points}{MDS}
-#'   \item{eigen}{eigenvalues}
-#' }
-#' @export
-#' @examples
-#' x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-#' cmds <- fast_mds(x = x, l = 100, s = 8, k = 2)
-#' head(cmds$points)
-#' cmds$eigen
-#' @seealso
-#' \url{https://arxiv.org/abs/2007.11919}
+#'@return Returns a list containing the following elements:
+#'\describe{
+#'   \item{points}{A matrix that consists of *k* columns corresponding to the MDS coordinates.}
+#'   \item{eigen}{The first *k* eigenvalues.}
+#'}
+#'@examples
+#'x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
+#'cmds <- fast_mds(x = x, l = 100, s = 8, k = 2)
+#'head(cmds$points)
+#'cmds$eigen
+#'@references
+#'Yang, Tynia and Liu, Jinze and Mcmillan, Leonard and Wang, Wei (2006).
+#' 
+#'Borg and Groenen (1997). *Modern Multidimensional Scaling*. New York: Springer. pp. 340-342.
+#'@export
 fast_mds <- function(x, l, s, k) {
 
   has_row_names <- !is.null(row.names(x))
