@@ -30,7 +30,7 @@ problems.
 Gower interpolation formula allows to add a new set of points to a given MDS configuration.
 
 Given a matrix \emph{X nxp}, a MDS configuration for this matrix, and a matrix \emph{X_new mxp}, one wants to add these
-new \emph{m} rows to the existing MDS configuration. So,after adding these new rows,the MDS configuration will have \emph{n+m}
+new \emph{m} rows to the existing MDS configuration. So, after adding these new rows, the MDS configuration will have \emph{n+m}
 rows.
 }
 \examples{
