@@ -5,7 +5,7 @@
 #'@details Gower interpolation formula allows to add a new set of points to a given MDS configuration.
 #'
 #'Given a matrix *X nxp*, a MDS configuration for this matrix, and a matrix *X_new mxp*, one wants to add these
-#'new *m* rows to the existing MDS configuration. So,after adding these new rows,the MDS configuration will have *n+m*
+#'new *m* rows to the existing MDS configuration. So, after adding these new rows, the MDS configuration will have *n+m*
 #'rows.
 #'@param x Data matrix.
 #'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes 
