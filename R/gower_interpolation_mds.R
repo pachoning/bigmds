@@ -1,21 +1,31 @@
 #'@title MDS based on Gower interpolation formula
-#'@description Performs Multidimensional Scaling based on Gower interpolation formula.
+#'@description Performs *Multidimensional Scaling* for big datasets. This method can compute a MDS configuration 
+#'even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run due to computational 
+#'problems.
+#'@details Gower interpolation formula allows to add a new set of points to a given MDS configuration.
+#'
+#'Given a matrix *X nxp*, a MDS configuration for this matrix, and a matrix *X_new mxp*, one wants to add these
+#'new *m* rows to the existing MDS configuration. So,after adding these new rows,the MDS configuration will have *n+m*
+#'rows.
 #'@param x Data matrix.
-#'@param l The highest value where classical MDS can be computed efficiently.
+#'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes 
+#'`cmdscale()` be run without any computational issues.
 #'@param k Number of principal coordinates.
-#'@return Returns MDS based on Fast MDS algorithm as well as the first k eigenvalues.
+#'@return Returns a list containing the following elements:
 #' \describe{
-#'   \item{points}{MDS}
-#'   \item{eigen}{eigenvalues}
+#'   \item{points}{A matrix that consists of *k* columns corresponding to the MDS coordinates.}
+#'   \item{eigen}{The first *k* eigenvalues.}
 #' }
+#'@examples
+#'x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
+#'cmds <- gower_interpolation_mds(x = x, l = 100, k = 2)
+#'head(cmds$points)
+#'cmds$eigen
+#'@references
+#'Gower, J.C. and D.J, Hand (1995). *Biplots*, Volume 54. CRC Press.
+#'
+#'Borg and Groenen (1997). *Modern Multidimensional Scaling*. New York: Springer. pp. 340-342.
 #' @export
-#' @examples
-#' x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-#' cmds <- gower_interpolation_mds(x = x, l = 100, k = 2)
-#' head(cmds$points)
-#' cmds$eigen
-#' @seealso
-#' \url{https://arxiv.org/abs/2007.11919}
 gower_interpolation_mds <- function(x, l, k) {
 
   nrow_x <- nrow(x)
