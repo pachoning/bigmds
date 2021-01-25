@@ -7,24 +7,41 @@
 divide_conquer_mds(x, l, num_stitching_points, k)
 }
 \arguments{
-\item{x}{Data matrix.}
+\item{x}{Dataset.}
 
-\item{l}{The highest value where classical MDS can be computed efficiently.}
+\item{l}{The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes
+\code{cmdscale()} be run without any computational issues.}
 
-\item{num_stitching_points}{Number of stitching points used to align the MDS solutions obtained by the division of x
-into small groups of matrices. We recommend to use 2 * k.}
+\item{num_stitching_points}{Number of stitching points used to align the MDS solutions obtained by the division of \emph{x}
+into small groups of matrices. Recommended value: \emph{2·k}.}
 
 \item{k}{Number of principal coordinates.}
 }
 \value{
-Returns MDS based on Divide and Conquer MDS as well as the first k eigenvalues.
+Returns a list containing the following elements:
 \describe{
-\item{points}{MDS}
-\item{eigen}{eigenvalues}
+\item{points}{A matrix that consists of \emph{k} columns corresponding to the MDS coordinates.}
+\item{eigen}{The first \emph{k} eigenvalues.}
 }
 }
 \description{
-Performs Multidimensional Scaling based on Delicado and Pachon-Garcia, 2020.
+Performs \emph{Multidimensional Scaling} for big datasets. This method can compute a MDS configuration
+even when the dataset is so large that classical MDS methods (\code{cmdscale}) can not be run due to computational
+problems.
+}
+\details{
+In order to obtain a MDS configuration for the entire matrix \emph{x}, it is needed to break the dataset into \emph{p}
+submatrices (\emph{divide and conquer strategy}).
+
+In order to obtain \emph{p}, \emph{num_stitching_points} as well as \emph{l} parameters are taken into account. \emph{p} is calculated in
+such a way that it is possible to use \code{cmdscale} function in every submatrix.
+
+Given a MDS solution, any rotation is another (valid) MDS solution. It means that every partition \emph{1<=k<=p} has its
+own coordinate system.
+
+So, in order to keep the same coordinate system, a subsamplig of \emph{num_stitching_points} points are taken from partition
+\emph{k-1} and used to align the MDS configuration of partition \emph{k}. Such an alignment is performed by means of Procrustes
+transformations.
 }
 \examples{
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
@@ -32,6 +49,9 @@ cmds <- divide_conquer_mds(x = x, l = 100, num_stitching_points = 8, k = 2)
 head(cmds$points)
 cmds$eigen
 }
-\seealso{
+\references{
+Delicado and Pachon-Garcia (2020).
 \url{https://arxiv.org/abs/2007.11919}
+
+Borg and Groenen (1997). \emph{Modern Multidimensional Scaling}. New York: Springer. pp. 340-342.
 }
