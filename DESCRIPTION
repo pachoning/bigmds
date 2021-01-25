@@ -15,8 +15,8 @@ Authors@R:
 Description: We present a set of algorithms for Multidimensional Scaling (MDS) to be used with large datasets. MDS is a statistic tool for reduction of dimensionality, using as input a distance matrix of dimensions n × n. 
   When n is large, classical algorithms suffer from computational problems and MDS configuration can not be obtained.
   With this package, we address these problems by means of three algorithms: 
-  - Divide and Conquer MDS debeloped by Delicado and Pachon-Garcia (2020) <arXiv:2007.11919>.
-  - Fast MDS, which is an implementation of Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei, (2006).
+  - Divide and Conquer MDS debeloped by Delicado and Pachon-Garcia, (2020) <arXiv:2007.11919>.
+  - Fast MDS, which is an implementation of Yang, Tynia and Liu, Jinze and Mcmillan, Leonard and Wang, Wei, (2006).
   - MDS based on Gower interpolation, which uses Gower interpolation formula developend in Borg and Groenen (1997, ISBN: 78-0-387-28981-6).
   The main idea of these methods is based on partitioning the dataset into small pieces, where classical methods can work.
 License: MIT + file LICENSE
