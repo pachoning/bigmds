@@ -35,11 +35,11 @@ compute a MDS configuration even when the dataset is so large that classical MDS
 due to computational problems.
 }
 \details{
-In order to obtain a MDS configuration for the entire matrix \code{k}, it is needed to break the dataset into
+In order to obtain a MDS configuration for the entire matrix \code{x}, it is needed to break the dataset into
 p submatrices (\emph{Divide and Conquer strategy}).
 
-In order to obtain p, \code{tie} as well as \code{l} parameters are taken into account: p=n/\code{(l-tie)}. This
-allows to use \code{cmdscale} function in every submatrix.
+In order to obtain p, \code{tie} and \code{l} are taken into account: p=n/\code{(l-tie)}. This allows to use
+\code{cmdscale} function in every submatrix.
 
 Given a MDS solution, any rotation is another (valid) MDS solution. It means that every partition has its
 own coordinate system.
