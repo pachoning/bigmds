@@ -60,12 +60,12 @@ get_partitions_for_divide_conquer <- function(n, l, num_stitching_points, k) {
 #' 
 #'Borg and Groenen (1997). *Modern Multidimensional Scaling*. New York: Springer. pp. 340-342.
 #'@export
-divide_conquer_mds <- function(x, l, num_stitching_points, k) {
+divide_conquer_mds <- function(x, l, num_stitching_points, k, dist_fn) {
   initial_row_names <- row.names(x)
   row.names(x) <- 1:nrow(x)
 
   if (nrow(x) <= l) {
-    mds_to_return <- classical_mds(x = x, k = k)
+    mds_to_return <- classical_mds(x = x, k = k, dist_fn = dist_fn)
     mds_to_return$eigen <- mds_to_return$eigen / length(mds_to_return$eigen)
   } else {
     index_partition <- get_partitions_for_divide_conquer(n = nrow(x), l = l, num_stitching_points = num_stitching_points, k = k)
@@ -83,7 +83,7 @@ divide_conquer_mds <- function(x, l, num_stitching_points, k) {
 
       if (i == 1) {
         
-        list_classical_mds <- classical_mds(x = x_current, k = k) 
+        list_classical_mds <- classical_mds(x = x_current, k = k, dist_fn = dist_fn) 
         cum_mds <- list_classical_mds$points
         eigen <- list_classical_mds$eigen / length(list_classical_mds$eigen)
         min_len <- length(eigen)

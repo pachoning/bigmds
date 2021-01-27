@@ -26,7 +26,7 @@
 #'
 #'Borg and Groenen (1997). *Modern Multidimensional Scaling*. New York: Springer. pp. 340-342.
 #' @export
-gower_interpolation_mds <- function(x, l, k) {
+gower_interpolation_mds <- function(x, l, k, dist_fn) {
 
   nrow_x <- nrow(x)
   p <- ceiling(nrow_x / l)
@@ -46,7 +46,7 @@ gower_interpolation_mds <- function(x, l, k) {
 
     # Do MDS with the first group
     submatrix_data <- x[ind_1, ,drop = FALSE]
-    mds_eig <- classical_mds(x = submatrix_data, k = k, return_distance_matrix = TRUE)
+    mds_eig <- classical_mds(x = submatrix_data, k = k, dist_fn = dist_fn, return_distance_matrix = TRUE)
     distance_matrix <- mds_eig$distance
 
     M <- mds_eig$points
@@ -83,7 +83,7 @@ gower_interpolation_mds <- function(x, l, k) {
     }
   } else {
     # It is possible to run MDS directly
-    mds_eig <- classical_mds(x = x, k = k, return_distance_matrix = TRUE)
+    mds_eig <- classical_mds(x = x, k = k, dist_fn = dist_fn, return_distance_matrix = TRUE)
     distance_matrix <- mds_eig$distance
     cum_mds <- mds_eig$points
     eigen <- mds_eig$eig / nrow_x

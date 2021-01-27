@@ -57,7 +57,7 @@ get_partitions_for_fast <- function(n, l, s, k) {
 #' 
 #'Borg and Groenen (1997). *Modern Multidimensional Scaling*. New York: Springer. pp. 340-342.
 #'@export
-fast_mds <- function(x, l, s, k) {
+fast_mds <- function(x, l, s, k, dist_fn) {
 
   has_row_names <- !is.null(row.names(x))
   if (!has_row_names) {
@@ -66,7 +66,7 @@ fast_mds <- function(x, l, s, k) {
 
   #If possible to run classical MDS on the whole matrix, run it
   if (nrow(x) <= l) {
-    mds <- classical_mds(x = x, k = k)
+    mds <- classical_mds(x = x, k = k, dist_fn = dist_fn)
     mds$eigen <- mds$eigen / length(mds$eigen)
 
     if (!has_row_names) {
@@ -90,7 +90,7 @@ fast_mds <- function(x, l, s, k) {
     for (i in 1:p) {
       indexes_partition <- which(index_partition == i)
       x_partition <- x[indexes_partition, ,drop = FALSE]
-      mds_partition <- fast_mds(x = x_partition, l = l, s = s, k = k)
+      mds_partition <- fast_mds(x = x_partition, l = l, s = s, k = k, dist_fn = stats::dist)
       points[[i]] <- mds_partition$points
       row.names(points[[i]]) <- row.names(x_partition)
       sampling_points[[i]] <- sample(x = row.names(x_partition), size = s, replace = FALSE)
@@ -111,7 +111,7 @@ fast_mds <- function(x, l, s, k) {
     ind <- unlist(sampling_points)
     x_M <- x[ind, ,drop = FALSE]
     row.names(x_M) <- row.names(x[ind, ,drop = FALSE])
-    mds_M <- classical_mds(x = x_M, k = k)
+    mds_M <- classical_mds(x = x_M, k = k, dist_fn = dist_fn)
     mds_M <- mds_M$points
     row.names(mds_M) <- row.names(x_M)
 
