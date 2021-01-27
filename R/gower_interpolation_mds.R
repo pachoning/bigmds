@@ -3,12 +3,15 @@
 #'compute a MDS configuration even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run 
 #'due to computational problems.
 #'@details *Gower interpolation formula* is the central piece of this algorithm since it allows to add a new set of 
-#'points to an existing MDS configuration. 
+#'points to an existing MDS configuration so that the new one has the same coordinate system. 
 #'
 #'Given the matrix \code{x} with n individuals (rows) and q variables (columns), a submatrix based on a random sample 
-#'of \code{l} individuals is taken and it is used to compute a MDS configuration. This configuration is used 
-#'together with *Gower interpolation formula* in order to obtain a MDS configuraton for the entire matrix \code{x}. 
+#'of \code{l} individuals is taken and it is used to compute a MDS configuration. 
 #'
+#'The remainig part of \code{x} is divided into p=(n-\code{l})/\code{l} submatrices. For every submatrix, it is obtained 
+#'a MDS configuration by means of *Gower interpolation formula* and the first (random) submatrix. Every MDS 
+#'configuration is appended to the existing one so that, at the end of the process, a MDS for \code{x} configuration 
+#'is built.
 #'@param x A matrix with n individuals (rows) and q variables (columns).
 #'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes 
 #'`cmdscale()` be run without any computational issues.
