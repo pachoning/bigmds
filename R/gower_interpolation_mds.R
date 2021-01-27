@@ -10,8 +10,8 @@
 #'
 #'The remaining part of \code{x} is divided into p=(n-\code{l})/\code{l} submatrices. For every submatrix, it is obtained 
 #'a MDS configuration by means of *Gower interpolation formula* and the first (random) submatrix. Every MDS 
-#'configuration is appended to the existing one so that, at the end of the process, a MDS for \code{x} configuration 
-#'is built.
+#'configuration is appended to the existing one so that, at the end of the process, a MDS configuration for \code{x} is 
+#'built.
 #'@param x A matrix with n individuals (rows) and q variables (columns).
 #'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes 
 #'`cmdscale()` be run without any computational issues.
