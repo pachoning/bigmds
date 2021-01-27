@@ -38,7 +38,7 @@ points to an existing MDS configuration so that the new one has the same coordin
 Given the matrix \code{x} with n individuals (rows) and q variables (columns), a submatrix based on a random sample
 of \code{l} individuals is taken and it is used to compute a MDS configuration.
 
-The remainig part of \code{x} is divided into p=(n-\code{l})/\code{l} submatrices. For every submatrix, it is obtained
+The remaining part of \code{x} is divided into p=(n-\code{l})/\code{l} submatrices. For every submatrix, it is obtained
 a MDS configuration by means of \emph{Gower interpolation formula} and the first (random) submatrix. Every MDS
 configuration is appended to the existing one so that, at the end of the process, a MDS for \code{x} configuration
 is built.
