@@ -44,6 +44,7 @@ get_partitions_for_divide_conquer <- function(n, l, num_stitching_points, k) {
 #'@param num_stitching_points Number of stitching points used to align the MDS solutions obtained by the division of *x* 
 #'into small groups of matrices. Recommended value: *2·k*.
 #'@param k Number of principal coordinates.
+#'@param dist_fn Distance function to be used for obtaining a MDS configuration.
 #'@return Returns a list containing the following elements:
 #' \describe{
 #'   \item{points}{A matrix that consists of *k* columns corresponding to the MDS coordinates.}
@@ -51,7 +52,7 @@ get_partitions_for_divide_conquer <- function(n, l, num_stitching_points, k) {
 #'}
 #'@examples
 #'x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-#'cmds <- divide_conquer_mds(x = x, l = 100, num_stitching_points = 8, k = 2)
+#'cmds <- divide_conquer_mds(x = x, l = 100, num_stitching_points = 8, k = 2, dist_fn = stats::dist)
 #'head(cmds$points)
 #'cmds$eigen
 #'@references
@@ -60,7 +61,8 @@ get_partitions_for_divide_conquer <- function(n, l, num_stitching_points, k) {
 #' 
 #'Borg and Groenen (1997). *Modern Multidimensional Scaling*. New York: Springer. pp. 340-342.
 #'@export
-divide_conquer_mds <- function(x, l, num_stitching_points, k, dist_fn) {
+divide_conquer_mds <- function(x, l, num_stitching_points, k, dist_fn = stats::dist) {
+
   initial_row_names <- row.names(x)
   row.names(x) <- 1:nrow(x)
 
@@ -82,7 +84,7 @@ divide_conquer_mds <- function(x, l, num_stitching_points, k, dist_fn) {
       row_names_current <- row.names(x_current)
 
       if (i == 1) {
-        
+
         list_classical_mds <- classical_mds(x = x_current, k = k, dist_fn = dist_fn) 
         cum_mds <- list_classical_mds$points
         eigen <- list_classical_mds$eigen / length(list_classical_mds$eigen)

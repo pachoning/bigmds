@@ -4,7 +4,7 @@
 \alias{fast_mds}
 \title{Fast MDS}
 \usage{
-fast_mds(x, l, s, k)
+fast_mds(x, l, s, k, dist_fn = stats::dist)
 }
 \arguments{
 \item{x}{Dataset.}
@@ -15,6 +15,8 @@ fast_mds(x, l, s, k)
 \item{s}{Number of sampling points. Recommended value: \emph{2·k}.}
 
 \item{k}{Number of principal coordinates.}
+
+\item{dist_fn}{Distance function to be used for obtaining a MDS configuration.}
 }
 \value{
 Returns a list containing the following elements:
@@ -43,7 +45,7 @@ efficiently.
 }
 \examples{
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-cmds <- fast_mds(x = x, l = 100, s = 8, k = 2)
+cmds <- fast_mds(x = x, l = 100, s = 8, k = 2, dist_fn = stats::dist)
 head(cmds$points)
 cmds$eigen
 }

@@ -11,6 +11,7 @@
 #'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes 
 #'`cmdscale()` be run without any computational issues.
 #'@param k Number of principal coordinates.
+#'@param dist_fn Distance function to be used for obtaining a MDS configuration.
 #'@return Returns a list containing the following elements:
 #' \describe{
 #'   \item{points}{A matrix that consists of *k* columns corresponding to the MDS coordinates.}
@@ -26,7 +27,7 @@
 #'
 #'Borg and Groenen (1997). *Modern Multidimensional Scaling*. New York: Springer. pp. 340-342.
 #' @export
-gower_interpolation_mds <- function(x, l, k, dist_fn) {
+gower_interpolation_mds <- function(x, l, k, dist_fn = stats::dist) {
 
   nrow_x <- nrow(x)
   p <- ceiling(nrow_x / l)

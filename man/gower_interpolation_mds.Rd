@@ -4,7 +4,7 @@
 \alias{gower_interpolation_mds}
 \title{MDS based on Gower interpolation formula}
 \usage{
-gower_interpolation_mds(x, l, k)
+gower_interpolation_mds(x, l, k, dist_fn = stats::dist)
 }
 \arguments{
 \item{x}{Data matrix.}
@@ -13,6 +13,8 @@ gower_interpolation_mds(x, l, k)
 \code{cmdscale()} be run without any computational issues.}
 
 \item{k}{Number of principal coordinates.}
+
+\item{dist_fn}{Distance function to be used for obtaining a MDS configuration.}
 }
 \value{
 Returns a list containing the following elements:

@@ -4,7 +4,7 @@
 \alias{divide_conquer_mds}
 \title{Divide and Conquer MDS}
 \usage{
-divide_conquer_mds(x, l, num_stitching_points, k)
+divide_conquer_mds(x, l, num_stitching_points, k, dist_fn = stats::dist)
 }
 \arguments{
 \item{x}{Dataset.}
@@ -16,6 +16,8 @@ divide_conquer_mds(x, l, num_stitching_points, k)
 into small groups of matrices. Recommended value: \emph{2·k}.}
 
 \item{k}{Number of principal coordinates.}
+
+\item{dist_fn}{Distance function to be used for obtaining a MDS configuration.}
 }
 \value{
 Returns a list containing the following elements:
@@ -45,7 +47,7 @@ transformations.
 }
 \examples{
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-cmds <- divide_conquer_mds(x = x, l = 100, num_stitching_points = 8, k = 2)
+cmds <- divide_conquer_mds(x = x, l = 100, num_stitching_points = 8, k = 2, dist_fn = stats::dist)
 head(cmds$points)
 cmds$eigen
 }
