@@ -77,7 +77,7 @@ divide_conquer_mds <- function(x, l, tie, k, dist_fn = stats::dist, ...) {
     index_partition <- get_partitions_for_divide_conquer(n = nrow(x), l = l, tie = tie, k = k)
     p <- max(index_partition)
 
-    min_len = NA
+    min_len <- NA
     eigen <- c()
 
     # Calculate mds for each partition and take tie poits from each subsample
