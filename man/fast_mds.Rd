@@ -4,7 +4,7 @@
 \alias{fast_mds}
 \title{Fast MDS}
 \usage{
-fast_mds(x, l, s, k, dist_fn = stats::dist)
+fast_mds(x, l, s, k, dist_fn = stats::dist, ...)
 }
 \arguments{
 \item{x}{A matrix with n individuals (rows) and q variables (columns).}
@@ -18,6 +18,8 @@ Recommended value: \code{2·k}.}
 \item{k}{Number of principal coordinates to be extracted.}
 
 \item{dist_fn}{Distance function to be used for obtaining a MDS configuration.}
+
+\item{...}{Further arguments passed to \code{dist_fn} function.}
 }
 \value{
 Returns a list containing the following elements:
@@ -44,7 +46,7 @@ Once every submatrix has its own MDS configuration, \code{s} (random) points are
 
 After that, a MDS configuration for \emph{M} is obtained. So, there are 2 configurations for the \code{s} points: one from
 performing MDS over every partition and another one from \emph{M}. This allows to compute Procrustes (alignment method) so
-that all the MDS solutions are aligned.
+that all the MDS solutions share the same coordinate system.
 }
 \examples{
 set.seed(42)

@@ -17,6 +17,7 @@
 #'`cmdscale()` be run without any computational issues.
 #'@param k Number of principal coordinates to be extracted.
 #'@param dist_fn Distance function to be used for obtaining a MDS configuration.
+#'@param ... Further arguments passed to \code{dist_fn} function.
 #'@return Returns a list containing the following elements:
 #' \describe{
 #'   \item{points}{A matrix that consists of n individuals (rows) and \code{k} variables (columns) corresponding to the 
@@ -35,7 +36,7 @@
 #'
 #'Borg I and P. Groenen (1997). *Modern Multidimensional Scaling: Theory and Applications*. New York: Springer. pp. 340-342.
 #' @export
-gower_interpolation_mds <- function(x, l, k, dist_fn = stats::dist) {
+gower_interpolation_mds <- function(x, l, k, dist_fn = stats::dist, ...) {
 
   nrow_x <- nrow(x)
   p <- ceiling(nrow_x / l)
@@ -58,7 +59,7 @@ gower_interpolation_mds <- function(x, l, k, dist_fn = stats::dist) {
 
     # Do MDS with the first group
     submatrix_data <- x[ind_1, ,drop = FALSE]
-    mds_eig <- classical_mds(x = submatrix_data, k = k, dist_fn = dist_fn, return_distance_matrix = TRUE)
+    mds_eig <- classical_mds(x = submatrix_data, k = k, dist_fn = dist_fn, return_distance_matrix = TRUE, ...)
     distance_matrix <- mds_eig$distance
 
     M <- mds_eig$points
@@ -101,7 +102,7 @@ gower_interpolation_mds <- function(x, l, k, dist_fn = stats::dist) {
 
   } else {
     # It is possible to run MDS directly
-    mds_eig <- classical_mds(x = x, k = k, dist_fn = dist_fn, return_distance_matrix = TRUE)
+    mds_eig <- classical_mds(x = x, k = k, dist_fn = dist_fn, return_distance_matrix = TRUE, ...)
     distance_matrix <- mds_eig$distance
     cum_mds <- mds_eig$points
     eigen <- mds_eig$eig / nrow_x

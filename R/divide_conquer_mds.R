@@ -45,6 +45,7 @@ get_partitions_for_divide_conquer <- function(n, l, tie, k) {
 #'Recommended value: \code{2·k}.
 #'@param k Number of principal coordinates to be extracted.
 #'@param dist_fn Distance function to be used for obtaining a MDS configuration.
+#'@param ... Further arguments passed to \code{dist_fn} function.
 #'@return Returns a list containing the following elements:
 #' \describe{
 #'   \item{points}{A matrix that consists of n individuals (rows) and \code{k} variables (columns) corresponding to the 
@@ -64,13 +65,13 @@ get_partitions_for_divide_conquer <- function(n, l, tie, k) {
 #' 
 #'Borg I and P. Groenen (1997). *Modern Multidimensional Scaling: Theory and Applications*. New York: Springer. pp. 340-342.
 #'@export
-divide_conquer_mds <- function(x, l, tie, k, dist_fn = stats::dist) {
+divide_conquer_mds <- function(x, l, tie, k, dist_fn = stats::dist, ...) {
 
   initial_row_names <- row.names(x)
   row.names(x) <- 1:nrow(x)
 
   if (nrow(x) <= l) {
-    mds_to_return <- classical_mds(x = x, k = k, dist_fn = dist_fn)
+    mds_to_return <- classical_mds(x = x, k = k, dist_fn = dist_fn, ...)
     mds_to_return$eigen <- mds_to_return$eigen / length(mds_to_return$eigen)
   } else {
     index_partition <- get_partitions_for_divide_conquer(n = nrow(x), l = l, tie = tie, k = k)
@@ -88,7 +89,7 @@ divide_conquer_mds <- function(x, l, tie, k, dist_fn = stats::dist) {
 
       if (i == 1) {
 
-        list_classical_mds <- classical_mds(x = x_current, k = k, dist_fn = dist_fn) 
+        list_classical_mds <- classical_mds(x = x_current, k = k, dist_fn = dist_fn, ...) 
         cum_mds <- list_classical_mds$points
         eigen <- list_classical_mds$eigen / length(list_classical_mds$eigen)
         min_len <- length(eigen)

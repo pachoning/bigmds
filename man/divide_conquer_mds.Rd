@@ -4,7 +4,7 @@
 \alias{divide_conquer_mds}
 \title{Divide and Conquer MDS}
 \usage{
-divide_conquer_mds(x, l, tie, k, dist_fn = stats::dist)
+divide_conquer_mds(x, l, tie, k, dist_fn = stats::dist, ...)
 }
 \arguments{
 \item{x}{A matrix with n individuals (rows) and q variables (columns).}
@@ -18,6 +18,8 @@ Recommended value: \code{2·k}.}
 \item{k}{Number of principal coordinates to be extracted.}
 
 \item{dist_fn}{Distance function to be used for obtaining a MDS configuration.}
+
+\item{...}{Further arguments passed to \code{dist_fn} function.}
 }
 \value{
 Returns a list containing the following elements:

@@ -4,7 +4,7 @@
 \alias{gower_interpolation_mds}
 \title{MDS based on Gower interpolation formula}
 \usage{
-gower_interpolation_mds(x, l, k, dist_fn = stats::dist)
+gower_interpolation_mds(x, l, k, dist_fn = stats::dist, ...)
 }
 \arguments{
 \item{x}{A matrix with n individuals (rows) and q variables (columns).}
@@ -15,6 +15,8 @@ gower_interpolation_mds(x, l, k, dist_fn = stats::dist)
 \item{k}{Number of principal coordinates to be extracted.}
 
 \item{dist_fn}{Distance function to be used for obtaining a MDS configuration.}
+
+\item{...}{Further arguments passed to \code{dist_fn} function.}
 }
 \value{
 Returns a list containing the following elements:
@@ -39,7 +41,7 @@ configuraton for the entire matrix \code{x}.
 
 In order to obtain a MDS configuration for the remaining part of \code{x}, it is divided into p=\code{(n-l)/l}
 submatrices. For every partition, Gower interpolation formula is used to compute and append  a MDS configuration to the
-exisitng ones.
+exisitng one.
 }
 \examples{
 set.seed(42)

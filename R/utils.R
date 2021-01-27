@@ -51,14 +51,14 @@ perform_procrustes <- function(x, target, matrix_to_transform, translation = FAL
 }
 
 
-classical_mds <- function(x, k, dist_fn = stats::dist, return_distance_matrix = FALSE) {
+classical_mds <- function(x, k, dist_fn = stats::dist, return_distance_matrix = FALSE, ...) {
 
   if (!is.function(dist_fn)){
     stop("dist_fn must be a function")
   }
 
   mds <- list()
-  dist_matrix <- dist_fn(x)
+  dist_matrix <- dist_fn(x, ...)
   mds_result <- stats::cmdscale(d = dist_matrix, k = k, eig = TRUE)
 
   mds$points <- mds_result$points
