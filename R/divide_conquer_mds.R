@@ -27,7 +27,7 @@ get_partitions_for_divide_conquer <- function(n, l, tie, k) {
 #'compute a MDS configuration even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run 
 #'due to computational problems.
 #'@details In order to obtain a MDS configuration for the entire matrix \code{k}, it is needed to break the dataset into 
-#'p submatrices (*Divide andCconquer strategy*).
+#'p submatrices (*Divide and Conquer strategy*).
 #' 
 #'In order to obtain p, \code{tie} as well as \code{l} parameters are taken into account: p=n/\code{(l-tie)}. This
 #'allows to use `cmdscale` function in every submatrix.

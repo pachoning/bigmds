@@ -36,7 +36,7 @@ due to computational problems.
 }
 \details{
 In order to obtain a MDS configuration for the entire matrix \code{k}, it is needed to break the dataset into
-p submatrices (\emph{Divide andCconquer strategy}).
+p submatrices (\emph{Divide and Conquer strategy}).
 
 In order to obtain p, \code{tie} as well as \code{l} parameters are taken into account: p=n/\code{(l-tie)}. This
 allows to use \code{cmdscale} function in every submatrix.
