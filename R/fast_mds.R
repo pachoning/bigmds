@@ -37,7 +37,7 @@ get_partitions_for_fast <- function(n, l, s, k) {
 #'
 #'After that, a MDS configuration for *M* is obtained. So, there are 2 configurations for the \code{s} points: one from 
 #'performing MDS over every partition and another one from *M*. This allows to compute Procrustes (alignment method) so 
-#'that all the MDS solutions are aligned.
+#'that all the MDS solutions share the same coordinate system.
 #'
 #'@param x A matrix with n individuals (rows) and q variables (columns).
 #'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes 
