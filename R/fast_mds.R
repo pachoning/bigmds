@@ -23,40 +23,48 @@ get_partitions_for_fast <- function(n, l, s, k) {
 }
 
 #'@title Fast MDS
-#'@description Performs *Multidimensional Scaling* for big datasets. This method can compute a MDS configuration 
-#'even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run due to computational 
-#'problems.
-#'@details In order to obtain a MDS configuration for the entire matrix *x*, it is partitioned into *p* submatrices. 
+#'@description Performs *Multidimensional Scaling* for big datasets using a recursive algorithm. This method can compute 
+#'a MDS configuration even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run 
+#'due to computational problems.
+#'@details In order to obtain a MDS configuration for the entire matrix \code{x}, it is partitioned into p submatrices,
+#'where p=\code{l/s}.
 #'
-#'For every partition, it is calculated a MDS configuration. The *p* MDS configurations are stitched by sampling *s*
-#'points for every individual solution and puting them into a matrix *M*.
+#'For every partition `cmdscale` is applied if the number of observations is less than \code{l}. Otherwise, `fast_mds`
+#'is called. Notice that in this part is where this algorithm becomes a recursive one.
+#' 
+#'Once every submatrix has its own MDS configuration, \code{s} (random) points are taken from every partition of 
+#'\code{x}. These points are put into a matrix *M*. Notice that *M* has \code{s}·p rows and q columns.
 #'
-#'After that, a MDS configuration for *M* is obtained. So, there are 2 configurations for the *s* points: one from 
+#'After that, a MDS configuration for *M* is obtained. So, there are 2 configurations for the \code{s} points: one from 
 #'performing MDS over every partition and another one from *M*. This allows to compute Procrustes (alignment method) so 
 #'that all the MDS solutions are aligned.
 #'
-#'This method is applied recursively until the size of every partition is such that `cmdscale` function can be computed
-#'efficiently.
-#'@param x Dataset.
-#'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes 
+#'@param x A matrix with n individuals (rows) and q variables (columns).
+#'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes 
 #'`cmdscale()` be run without any computational issues.
-#'@param s Number of sampling points. Recommended value: *2·k*.
-#'@param k Number of principal coordinates.
+#'@param s Number of points used to align the MDS solutions obtained by the division of \code{x} into p submatrices.
+#'Recommended value: \code{2·k}.
+#'@param k Number of principal coordinates to be extracted.
 #'@param dist_fn Distance function to be used for obtaining a MDS configuration.
 #'@return Returns a list containing the following elements:
 #'\describe{
-#'   \item{points}{A matrix that consists of *k* columns corresponding to the MDS coordinates.}
-#'   \item{eigen}{The first *k* eigenvalues.}
+#'   \item{points}{A matrix that consists of n individuals (rows) and \code{k} variables (columns) corresponding to the 
+#'   MDS coordinates.}
+#'   \item{eigen}{The first \code{k} eigenvalues.}
 #'}
 #'@examples
-#'x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-#'cmds <- fast_mds(x = x, l = 100, s = 8, k = 2, dist_fn = stats::dist)
-#'head(cmds$points)
-#'cmds$eigen
+#'set.seed(42)
+#'x <- matrix(data = rnorm(4*10000), nrow = 10000) %*% diag(c(15, 10, 1, 1))
+#'mds <- fast_mds(x = x, l = 200, s = 2*2, k = 2, dist_fn = stats::dist)
+#'head(cbind(mds$points, x[, 1:2]))
+#'var(x)
+#'var(mds$points)
 #'@references
-#'Yang, Tynia and Liu, Jinze and Mcmillan, Leonard and Wang, Wei (2006).
+#'Tynia, Y., L. Jinze, M. Leonard, and W. Wei (2006). *A fast approximation to multidimensional scaling*. Proceedings of 
+#'the ECCV Workshop on Computation Intensive Methods for Computer Vision (CIMCV).
+#'\url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.79.2445}
 #' 
-#'Borg and Groenen (1997). *Modern Multidimensional Scaling*. New York: Springer. pp. 340-342.
+#'Borg I and P. Groenen (1997). *Modern Multidimensional Scaling: Theory and Applications*. New York: Springer. pp. 340-342.
 #'@export
 fast_mds <- function(x, l, s, k, dist_fn = stats::dist) {
 

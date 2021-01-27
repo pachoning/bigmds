@@ -7,50 +7,57 @@
 fast_mds(x, l, s, k, dist_fn = stats::dist)
 }
 \arguments{
-\item{x}{Dataset.}
+\item{x}{A matrix with n individuals (rows) and q variables (columns).}
 
-\item{l}{The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes
+\item{l}{The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes
 \code{cmdscale()} be run without any computational issues.}
 
-\item{s}{Number of sampling points. Recommended value: \emph{2·k}.}
+\item{s}{Number of points used to align the MDS solutions obtained by the division of \code{x} into p submatrices.
+Recommended value: \code{2·k}.}
 
-\item{k}{Number of principal coordinates.}
+\item{k}{Number of principal coordinates to be extracted.}
 
 \item{dist_fn}{Distance function to be used for obtaining a MDS configuration.}
 }
 \value{
 Returns a list containing the following elements:
 \describe{
-\item{points}{A matrix that consists of \emph{k} columns corresponding to the MDS coordinates.}
-\item{eigen}{The first \emph{k} eigenvalues.}
+\item{points}{A matrix that consists of n individuals (rows) and \code{k} variables (columns) corresponding to the
+MDS coordinates.}
+\item{eigen}{The first \code{k} eigenvalues.}
 }
 }
 \description{
-Performs \emph{Multidimensional Scaling} for big datasets. This method can compute a MDS configuration
-even when the dataset is so large that classical MDS methods (\code{cmdscale}) can not be run due to computational
-problems.
+Performs \emph{Multidimensional Scaling} for big datasets using a recursive algorithm. This method can compute
+a MDS configuration even when the dataset is so large that classical MDS methods (\code{cmdscale}) can not be run
+due to computational problems.
 }
 \details{
-In order to obtain a MDS configuration for the entire matrix \emph{x}, it is partitioned into \emph{p} submatrices.
+In order to obtain a MDS configuration for the entire matrix \code{x}, it is partitioned into p submatrices,
+where p=\code{l/s}.
 
-For every partition, it is calculated a MDS configuration. The \emph{p} MDS configurations are stitched by sampling \emph{s}
-points for every individual solution and puting them into a matrix \emph{M}.
+For every partition \code{cmdscale} is applied if the number of observations is less than \code{l}. Otherwise, \code{fast_mds}
+is called. Notice that in this part is where this algorithm becomes a recursive one.
 
-After that, a MDS configuration for \emph{M} is obtained. So, there are 2 configurations for the \emph{s} points: one from
+Once every submatrix has its own MDS configuration, \code{s} (random) points are taken from every partition of
+\code{x}. These points are put into a matrix \emph{M}. Notice that \emph{M} has \code{s}·p rows and q columns.
+
+After that, a MDS configuration for \emph{M} is obtained. So, there are 2 configurations for the \code{s} points: one from
 performing MDS over every partition and another one from \emph{M}. This allows to compute Procrustes (alignment method) so
 that all the MDS solutions are aligned.
-
-This method is applied recursively until the size of every partition is such that \code{cmdscale} function can be computed
-efficiently.
 }
 \examples{
-x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-cmds <- fast_mds(x = x, l = 100, s = 8, k = 2, dist_fn = stats::dist)
-head(cmds$points)
-cmds$eigen
+set.seed(42)
+x <- matrix(data = rnorm(4*10000), nrow = 10000) \%*\% diag(c(15, 10, 1, 1))
+mds <- fast_mds(x = x, l = 200, s = 2*2, k = 2, dist_fn = stats::dist)
+head(cbind(mds$points, x[, 1:2]))
+var(x)
+var(mds$points)
 }
 \references{
-Yang, Tynia and Liu, Jinze and Mcmillan, Leonard and Wang, Wei (2006).
+Tynia, Y., L. Jinze, M. Leonard, and W. Wei (2006). \emph{A fast approximation to multidimensional scaling}. Proceedings of
+the ECCV Workshop on Computation Intensive Methods for Computer Vision (CIMCV).
+\url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.79.2445}
 
-Borg and Groenen (1997). \emph{Modern Multidimensional Scaling}. New York: Springer. pp. 340-342.
+Borg I and P. Groenen (1997). \emph{Modern Multidimensional Scaling: Theory and Applications}. New York: Springer. pp. 340-342.
 }

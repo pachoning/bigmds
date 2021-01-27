@@ -4,56 +4,59 @@
 \alias{divide_conquer_mds}
 \title{Divide and Conquer MDS}
 \usage{
-divide_conquer_mds(x, l, num_stitching_points, k, dist_fn = stats::dist)
+divide_conquer_mds(x, l, tie, k, dist_fn = stats::dist)
 }
 \arguments{
-\item{x}{Dataset.}
+\item{x}{A matrix with n individuals (rows) and q variables (columns).}
 
-\item{l}{The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes
+\item{l}{The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes
 \code{cmdscale()} be run without any computational issues.}
 
-\item{num_stitching_points}{Number of stitching points used to align the MDS solutions obtained by the division of \emph{x}
-into small groups of matrices. Recommended value: \emph{2·k}.}
+\item{tie}{Number of points used to align the MDS solutions obtained by the division of \code{x} into p submatrices.
+Recommended value: \code{2·k}.}
 
-\item{k}{Number of principal coordinates.}
+\item{k}{Number of principal coordinates to be extracted.}
 
 \item{dist_fn}{Distance function to be used for obtaining a MDS configuration.}
 }
 \value{
 Returns a list containing the following elements:
 \describe{
-\item{points}{A matrix that consists of \emph{k} columns corresponding to the MDS coordinates.}
-\item{eigen}{The first \emph{k} eigenvalues.}
+\item{points}{A matrix that consists of n individuals (rows) and \code{k} variables (columns) corresponding to the
+MDS coordinates.}
+\item{eigen}{The first \code{k} eigenvalues.}
 }
 }
 \description{
-Performs \emph{Multidimensional Scaling} for big datasets. This method can compute a MDS configuration
-even when the dataset is so large that classical MDS methods (\code{cmdscale}) can not be run due to computational
-problems.
+Performs \emph{Multidimensional Scaling} for big datasets using a Divide and Conquer strategy. This method can
+compute a MDS configuration even when the dataset is so large that classical MDS methods (\code{cmdscale}) can not be run
+due to computational problems.
 }
 \details{
-In order to obtain a MDS configuration for the entire matrix \emph{x}, it is needed to break the dataset into \emph{p}
-submatrices (\emph{divide and conquer strategy}).
+In order to obtain a MDS configuration for the entire matrix \code{k}, it is needed to break the dataset into
+p submatrices (\emph{Divide andCconquer strategy}).
 
-In order to obtain \emph{p}, \emph{num_stitching_points} as well as \emph{l} parameters are taken into account. \emph{p} is calculated in
-such a way that it is possible to use \code{cmdscale} function in every submatrix.
+In order to obtain p, \code{tie} as well as \code{l} parameters are taken into account: p=n/\code{(l-tie)}. This
+allows to use \code{cmdscale} function in every submatrix.
 
-Given a MDS solution, any rotation is another (valid) MDS solution. It means that every partition \emph{1<=k<=p} has its
+Given a MDS solution, any rotation is another (valid) MDS solution. It means that every partition has its
 own coordinate system.
 
-So, in order to keep the same coordinate system, a subsamplig of \emph{num_stitching_points} points are taken from partition
-\emph{k-1} and used to align the MDS configuration of partition \emph{k}. Such an alignment is performed by means of Procrustes
-transformations.
+In order to keep the same coordinate system, every two consecutive submatrices are forced to share \code{tie}
+points. These points are used to align the corresponding MDS configurations. Such an alignment is performed by means
+of Procrustes.
 }
 \examples{
-x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-cmds <- divide_conquer_mds(x = x, l = 100, num_stitching_points = 8, k = 2, dist_fn = stats::dist)
-head(cmds$points)
-cmds$eigen
+set.seed(42)
+x <- matrix(data = rnorm(4*10000), nrow = 10000) \%*\% diag(c(15, 10, 1, 1))
+mds <- divide_conquer_mds(x = x, l = 200, tie = 2*2, k = 2, dist_fn = stats::dist)
+head(cbind(mds$points, x[, 1:2]))
+var(x)
+var(mds$points)
 }
 \references{
-Delicado and Pachon-Garcia (2020).
+Delicado P. and C. Pachon-Garcia (2020). \emph{Multidimensional Scaling for Big Data}.
 \url{https://arxiv.org/abs/2007.11919}
 
-Borg and Groenen (1997). \emph{Modern Multidimensional Scaling}. New York: Springer. pp. 340-342.
+Borg I and P. Groenen (1997). \emph{Modern Multidimensional Scaling: Theory and Applications}. New York: Springer. pp. 340-342.
 }

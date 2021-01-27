@@ -7,42 +7,50 @@
 gower_interpolation_mds(x, l, k, dist_fn = stats::dist)
 }
 \arguments{
-\item{x}{Data matrix.}
+\item{x}{A matrix with n individuals (rows) and q variables (columns).}
 
-\item{l}{The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes
+\item{l}{The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes
 \code{cmdscale()} be run without any computational issues.}
 
-\item{k}{Number of principal coordinates.}
+\item{k}{Number of principal coordinates to be extracted.}
 
 \item{dist_fn}{Distance function to be used for obtaining a MDS configuration.}
 }
 \value{
 Returns a list containing the following elements:
 \describe{
-\item{points}{A matrix that consists of \emph{k} columns corresponding to the MDS coordinates.}
-\item{eigen}{The first \emph{k} eigenvalues.}
+\item{points}{A matrix that consists of n individuals (rows) and \code{k} variables (columns) corresponding to the
+MDS coordinates.}
+\item{eigen}{The first \code{k} eigenvalues.}
 }
 }
 \description{
-Performs \emph{Multidimensional Scaling} for big datasets. This method can compute a MDS configuration
-even when the dataset is so large that classical MDS methods (\code{cmdscale}) can not be run due to computational
-problems.
+Performs \emph{Multidimensional Scaling} for big datasets using Gower interpolation formula. This method can
+compute a MDS configuration even when the dataset is so large that classical MDS methods (\code{cmdscale}) can not be run
+due to computational problems.
 }
 \details{
-Gower interpolation formula allows to add a new set of points to a given MDS configuration.
+\emph{Gower interpolation formula} is the central piece of this algorithm since it allows to add a new set of
+points to an existing MDS configuration.
 
-Given a matrix \emph{X nxp}, a MDS configuration for this matrix, and a matrix \emph{X_new mxp}, one wants to add these
-new \emph{m} rows to the existing MDS configuration. So, after adding these new rows, the MDS configuration will have \emph{n+m}
-rows.
+Given the matrix \code{x} with n individuals (rows) and q variables (columns), a random sample of \code{l} individuals
+is taken and used to compute a MDS configuration. This configuration will be used in order to obtain a MDS
+configuraton for the entire matrix \code{x}.
+
+In order to obtain a MDS configuration for the remaining part of \code{x}, it is divided into p=\code{(n-l)/l}
+submatrices. For every partition, Gower interpolation formula is used to compute and append  a MDS configuration to the
+exisitng ones.
 }
 \examples{
-x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-cmds <- gower_interpolation_mds(x = x, l = 100, k = 2)
-head(cmds$points)
-cmds$eigen
+set.seed(42)
+x <- matrix(data = rnorm(4*10000), nrow = 10000) \%*\% diag(c(15, 10, 1, 1))
+mds <- gower_interpolation_mds(x = x, l = 200, k = 2, dist_fn = stats::dist)
+head(cbind(mds$points, x[, 1:2]))
+var(x)
+var(mds$points)
 }
 \references{
-Gower, J.C. and D.J, Hand (1995). \emph{Biplots}, Volume 54. CRC Press.
+Gower, J.C. and D.J, Hand (1995). \emph{Biplots}. Volume 54. CRC Press.
 
-Borg and Groenen (1997). \emph{Modern Multidimensional Scaling}. New York: Springer. pp. 340-342.
+Borg I and P. Groenen (1997). \emph{Modern Multidimensional Scaling: Theory and Applications}. New York: Springer. pp. 340-342.
 }

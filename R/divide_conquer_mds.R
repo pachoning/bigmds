@@ -23,43 +23,46 @@ get_partitions_for_divide_conquer <- function(n, l, tie, k) {
 }
 
 #'@title Divide and Conquer MDS
-#'@description Performs *Multidimensional Scaling* for big datasets. This method can compute a MDS configuration 
-#'even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run due to computational 
-#'problems.
-#'@details In order to obtain a MDS configuration for the entire matrix *x*, it is needed to break the dataset into *p* 
-#'submatrices (*divide and conquer strategy*).
+#'@description Performs *Multidimensional Scaling* for big datasets using a Divide and Conquer strategy. This method can 
+#'compute a MDS configuration even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run 
+#'due to computational problems.
+#'@details In order to obtain a MDS configuration for the entire matrix \code{k}, it is needed to break the dataset into 
+#'p submatrices (*Divide andCconquer strategy*).
 #' 
-#'In order to obtain *p*, *tie* as well as *l* parameters are taken into account. *p* is calculated in
-#'such a way that it is possible to use `cmdscale` function in every submatrix.
+#'In order to obtain p, \code{tie} as well as \code{l} parameters are taken into account: p=n/\code{(l-tie)}. This
+#'allows to use `cmdscale` function in every submatrix.
 #'
-#'Given a MDS solution, any rotation is another (valid) MDS solution. It means that every partition *1<=k<=p* has its 
+#'Given a MDS solution, any rotation is another (valid) MDS solution. It means that every partition has its 
 #'own coordinate system. 
 #'
-#'So, in order to keep the same coordinate system, a subsamplig of *tie* points are taken from partition 
-#'*k-1* and used to align the MDS configuration of partition *k*. Such an alignment is performed by means of Procrustes 
-#'transformations. 
-#'@param x Dataset.
-#'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes 
+#'In order to keep the same coordinate system, every two consecutive submatrices are forced to share \code{tie} 
+#'points. These points are used to align the corresponding MDS configurations. Such an alignment is performed by means 
+#'of Procrustes.
+#'@param x A matrix with n individuals (rows) and q variables (columns).
+#'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes 
 #'`cmdscale()` be run without any computational issues.
-#'@param tie Number of stitching points used to align the MDS solutions obtained by the division of *x* 
-#'into small groups of matrices. Recommended value: *2·k*.
-#'@param k Number of principal coordinates.
+#'@param tie Number of points used to align the MDS solutions obtained by the division of \code{x} into p submatrices.
+#'Recommended value: \code{2·k}.
+#'@param k Number of principal coordinates to be extracted.
 #'@param dist_fn Distance function to be used for obtaining a MDS configuration.
 #'@return Returns a list containing the following elements:
 #' \describe{
-#'   \item{points}{A matrix that consists of *k* columns corresponding to the MDS coordinates.}
-#'   \item{eigen}{The first *k* eigenvalues.}
+#'   \item{points}{A matrix that consists of n individuals (rows) and \code{k} variables (columns) corresponding to the 
+#'   MDS coordinates.}
+#'   \item{eigen}{The first \code{k} eigenvalues.}
 #'}
 #'@examples
-#'x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-#'cmds <- divide_conquer_mds(x = x, l = 100, tie = 8, k = 2, dist_fn = stats::dist)
-#'head(cmds$points)
-#'cmds$eigen
+#'set.seed(42)
+#'x <- matrix(data = rnorm(4*10000), nrow = 10000) %*% diag(c(15, 10, 1, 1))
+#'mds <- divide_conquer_mds(x = x, l = 200, tie = 2*2, k = 2, dist_fn = stats::dist)
+#'head(cbind(mds$points, x[, 1:2]))
+#'var(x)
+#'var(mds$points)
 #'@references
-#'Delicado and Pachon-Garcia (2020).
+#'Delicado P. and C. Pachon-Garcia (2020). *Multidimensional Scaling for Big Data*.
 #'\url{https://arxiv.org/abs/2007.11919}
 #' 
-#'Borg and Groenen (1997). *Modern Multidimensional Scaling*. New York: Springer. pp. 340-342.
+#'Borg I and P. Groenen (1997). *Modern Multidimensional Scaling: Theory and Applications*. New York: Springer. pp. 340-342.
 #'@export
 divide_conquer_mds <- function(x, l, tie, k, dist_fn = stats::dist) {
 

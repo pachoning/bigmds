@@ -1,31 +1,39 @@
 #'@title MDS based on Gower interpolation formula
-#'@description Performs *Multidimensional Scaling* for big datasets. This method can compute a MDS configuration 
-#'even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run due to computational 
-#'problems.
-#'@details Gower interpolation formula allows to add a new set of points to a given MDS configuration.
+#'@description Performs *Multidimensional Scaling* for big datasets using Gower interpolation formula. This method can 
+#'compute a MDS configuration even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run 
+#'due to computational problems.
+#'@details *Gower interpolation formula* is the central piece of this algorithm since it allows to add a new set of 
+#'points to an existing MDS configuration. 
 #'
-#'Given a matrix *X nxp*, a MDS configuration for this matrix, and a matrix *X_new mxp*, one wants to add these
-#'new *m* rows to the existing MDS configuration. So, after adding these new rows, the MDS configuration will have *n+m*
-#'rows.
-#'@param x Data matrix.
-#'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes 
+#'Given the matrix \code{x} with n individuals (rows) and q variables (columns), a random sample of \code{l} individuals
+#'is taken and used to compute a MDS configuration. This configuration will be used in order to obtain a MDS
+#'configuraton for the entire matrix \code{x}. 
+#'
+#'In order to obtain a MDS configuration for the remaining part of \code{x}, it is divided into p=\code{(n-l)/l} 
+#'submatrices. For every partition, Gower interpolation formula is used to compute and append  a MDS configuration to the
+#'exisitng ones.
+#'@param x A matrix with n individuals (rows) and q variables (columns).
+#'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes 
 #'`cmdscale()` be run without any computational issues.
-#'@param k Number of principal coordinates.
+#'@param k Number of principal coordinates to be extracted.
 #'@param dist_fn Distance function to be used for obtaining a MDS configuration.
 #'@return Returns a list containing the following elements:
 #' \describe{
-#'   \item{points}{A matrix that consists of *k* columns corresponding to the MDS coordinates.}
-#'   \item{eigen}{The first *k* eigenvalues.}
+#'   \item{points}{A matrix that consists of n individuals (rows) and \code{k} variables (columns) corresponding to the 
+#'   MDS coordinates.}
+#'   \item{eigen}{The first \code{k} eigenvalues.}
 #' }
 #'@examples
-#'x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-#'cmds <- gower_interpolation_mds(x = x, l = 100, k = 2)
-#'head(cmds$points)
-#'cmds$eigen
+#'set.seed(42)
+#'x <- matrix(data = rnorm(4*10000), nrow = 10000) %*% diag(c(15, 10, 1, 1))
+#'mds <- gower_interpolation_mds(x = x, l = 200, k = 2, dist_fn = stats::dist)
+#'head(cbind(mds$points, x[, 1:2]))
+#'var(x)
+#'var(mds$points)
 #'@references
-#'Gower, J.C. and D.J, Hand (1995). *Biplots*, Volume 54. CRC Press.
+#'Gower, J.C. and D.J, Hand (1995). *Biplots*. Volume 54. CRC Press.
 #'
-#'Borg and Groenen (1997). *Modern Multidimensional Scaling*. New York: Springer. pp. 340-342.
+#'Borg I and P. Groenen (1997). *Modern Multidimensional Scaling: Theory and Applications*. New York: Springer. pp. 340-342.
 #' @export
 gower_interpolation_mds <- function(x, l, k, dist_fn = stats::dist) {
 
