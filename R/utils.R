@@ -53,7 +53,7 @@ perform_procrustes <- function(x, target, matrix_to_transform, translation = FAL
 
 classical_mds <- function(x, k, dist_fn = stats::dist, return_distance_matrix = FALSE, ...) {
 
-  if (!is.function(dist_fn)){
+  if (!is.function(dist_fn)) {
     stop("dist_fn must be a function")
   }
 
