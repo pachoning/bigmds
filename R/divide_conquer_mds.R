@@ -1,7 +1,7 @@
-get_partitions_for_divide_conquer <- function(n, l, num_stitching_points, k) {
+get_partitions_for_divide_conquer <- function(n, l, tie, k) {
 
-  p <- ceiling(n / (l-num_stitching_points))
-  min_sample_size <- max(k + 2, num_stitching_points)
+  p <- ceiling(n / (l-tie))
+  min_sample_size <- max(k + 2, tie)
 
   index_partition <- sort(rep(x = 1:p, length.out = n, each = ceiling(n / p)))
   p <- max(index_partition)
@@ -29,19 +29,19 @@ get_partitions_for_divide_conquer <- function(n, l, num_stitching_points, k) {
 #'@details In order to obtain a MDS configuration for the entire matrix *x*, it is needed to break the dataset into *p* 
 #'submatrices (*divide and conquer strategy*).
 #' 
-#'In order to obtain *p*, *num_stitching_points* as well as *l* parameters are taken into account. *p* is calculated in
+#'In order to obtain *p*, *tie* as well as *l* parameters are taken into account. *p* is calculated in
 #'such a way that it is possible to use `cmdscale` function in every submatrix.
 #'
 #'Given a MDS solution, any rotation is another (valid) MDS solution. It means that every partition *1<=k<=p* has its 
 #'own coordinate system. 
 #'
-#'So, in order to keep the same coordinate system, a subsamplig of *num_stitching_points* points are taken from partition 
+#'So, in order to keep the same coordinate system, a subsamplig of *tie* points are taken from partition 
 #'*k-1* and used to align the MDS configuration of partition *k*. Such an alignment is performed by means of Procrustes 
 #'transformations. 
 #'@param x Dataset.
 #'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the larges value which makes 
 #'`cmdscale()` be run without any computational issues.
-#'@param num_stitching_points Number of stitching points used to align the MDS solutions obtained by the division of *x* 
+#'@param tie Number of stitching points used to align the MDS solutions obtained by the division of *x* 
 #'into small groups of matrices. Recommended value: *2·k*.
 #'@param k Number of principal coordinates.
 #'@param dist_fn Distance function to be used for obtaining a MDS configuration.
@@ -52,7 +52,7 @@ get_partitions_for_divide_conquer <- function(n, l, num_stitching_points, k) {
 #'}
 #'@examples
 #'x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-#'cmds <- divide_conquer_mds(x = x, l = 100, num_stitching_points = 8, k = 2, dist_fn = stats::dist)
+#'cmds <- divide_conquer_mds(x = x, l = 100, tie = 8, k = 2, dist_fn = stats::dist)
 #'head(cmds$points)
 #'cmds$eigen
 #'@references
@@ -61,7 +61,7 @@ get_partitions_for_divide_conquer <- function(n, l, num_stitching_points, k) {
 #' 
 #'Borg and Groenen (1997). *Modern Multidimensional Scaling*. New York: Springer. pp. 340-342.
 #'@export
-divide_conquer_mds <- function(x, l, num_stitching_points, k, dist_fn = stats::dist) {
+divide_conquer_mds <- function(x, l, tie, k, dist_fn = stats::dist) {
 
   initial_row_names <- row.names(x)
   row.names(x) <- 1:nrow(x)
@@ -70,13 +70,13 @@ divide_conquer_mds <- function(x, l, num_stitching_points, k, dist_fn = stats::d
     mds_to_return <- classical_mds(x = x, k = k, dist_fn = dist_fn)
     mds_to_return$eigen <- mds_to_return$eigen / length(mds_to_return$eigen)
   } else {
-    index_partition <- get_partitions_for_divide_conquer(n = nrow(x), l = l, num_stitching_points = num_stitching_points, k = k)
+    index_partition <- get_partitions_for_divide_conquer(n = nrow(x), l = l, tie = tie, k = k)
     p <- max(index_partition)
 
     min_len = NA
     eigen <- c()
 
-    # Calculate mds for each partition and take num_stitching_points poits from each subsample
+    # Calculate mds for each partition and take tie poits from each subsample
     for (i in 1:p) {
 
       indexes_current <- which(index_partition == i)
@@ -104,7 +104,7 @@ divide_conquer_mds <- function(x, l, num_stitching_points, k, dist_fn = stats::d
         eigen <- eigen[1:min_len] + (list_mds_both$eigen[1:min_len] / length(list_mds_both$eigen))
       }
 
-      rn_subsample_previous <- sample(x = row_names_current, size = num_stitching_points, replace = FALSE)
+      rn_subsample_previous <- sample(x = row_names_current, size = tie, replace = FALSE)
 
     }
 
