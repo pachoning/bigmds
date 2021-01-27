@@ -18,9 +18,8 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-We present a set of algorithms for *Multidimensional Scaling (MDS)* to be used with large datasets. *MDS* is a statistic 
-tool for reduction of dimensionality, using as input a distance matrix of dimensions *n × n*. When *n* is large, 
-classical algorithms suffer from computational problems and *MDS* configuration can not be obtained.
+*MDS* is a statistic tool for reduction of dimensionality, using as input a distance matrix of dimensions *n × n*. 
+When *n* is large, classical algorithms suffer from computational problems and *MDS* configuration can not be obtained.
 
 With this package, we address these problems by means of three algorithms: 
 
@@ -29,7 +28,7 @@ With this package, we address these problems by means of three algorithms:
 - MDS based on Gower interpolation
 
 The main idea of these methods is based on partitioning the dataset into small pieces, where classical methods can work.
-*Fast MDS* was developed by *Yang, Tynia & Liu, Jinze & Mcmillan, Leonard & Wang, Wei. (2006)*, whereas 
+*Fast MDS* was developed by *Tynia, Y., L. Jinze, M. Leonard, and W. Wei, (2006)*, whereas 
 *Divide and Conquer MDS* and *MDS based on Gower interpolation* were developed by *Delicado and Pachon-Garcia, 2020.*
 
 To obtain more information, please read this [paper](https://arxiv.org/abs/2007.11919).
@@ -56,17 +55,20 @@ This is a basic example which shows you how to solve a common problem:
 library(bigmds)
 x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
 
-dc_mds <- divide_conquer_mds(x = x, l = 100, num_stitching_points = 8, k = 2)
-head(dc_mds$points)
-dc_mds$eigen
+divide_mds <- divide_conquer_mds(x = x, l = 200, tie = 2*2, k = 2, dist_fn = stats::dist)
+head(cbind(divide_mds$points, x[, 1:2]))
+var(x)
+var(divide_mds$points)
 
-f_mds <- fast_mds(x = x, l = 100, s = 8, k = 2)
-head(f_mds$points)
-f_mds$eigen
+fast_mds <- fast_mds(x = x, l = 200, s = 2*2, k = 2, dist_fn = stats::dist)
+head(cbind(fast_mds$points, x[, 1:2]))
+var(x)
+var(fast_mds$points)
 
-g_mds <- gower_interpolation_mds(x = x, l = 100, k = 2)
-head(g_mds$points)
-g_mds$eigen
+gower_mds <- gower_interpolation_mds(x = x, l = 200, k = 2, dist_fn = stats::dist)
+head(cbind(gower_mds$points, x[, 1:2]))
+var(x)
+var(gower_mds$points)
 ```
 
 With the implementation of *classical MDS*, it is not possible to obtain a MDS configuration due to computational 
