@@ -11,7 +11,7 @@
 #'
 #'In order to obtain a MDS configuration for the remaining part of \code{x}, it is divided into p=\code{(n-l)/l} 
 #'submatrices. For every partition, Gower interpolation formula is used to compute and append  a MDS configuration to the
-#'exisitng ones.
+#'exisitng one.
 #'@param x A matrix with n individuals (rows) and q variables (columns).
 #'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes 
 #'`cmdscale()` be run without any computational issues.
