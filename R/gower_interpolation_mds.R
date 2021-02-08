@@ -69,7 +69,7 @@ get_partitions_for_gower_interpolation <- function(n, l, k) {
 gower_interpolation_mds <- function(x, l, k, dist_fn = stats::dist, ...) {
 
   n <- nrow(x)
-  idexes_partition <- get_partitions_for_gower_interpolation(n = n, l = l)
+  idexes_partition <- get_partitions_for_gower_interpolation(n = n, l = l, k = k)
   num_partitions <- length(idexes_partition)
 
   if (num_partitions <= 1) {
