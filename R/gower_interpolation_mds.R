@@ -1,3 +1,33 @@
+get_partitions_for_gower_interpolation <- function(n, l, k) {
+
+  if (l<=k) {
+    stop("l must be greater than k")
+  }
+
+  p <- ceiling(n/l)
+  p <- pmax(1, p)
+
+  list_index <- list()
+
+  idexes <- sample(x = n, size = n)
+
+  for (i in 1:p) {
+
+    ini <- (i-1)*l + 1
+
+    if (i == p) {
+      end <- n
+    } else{
+      end <- i*l
+    }
+
+    list_index[[i]] <- idexes[ini:end]
+  }
+
+  return(list_index)
+}
+
+
 #'@title MDS based on Gower interpolation formula
 #'@description Performs *Multidimensional Scaling* for big datasets using Gower interpolation formula. This method can 
 #'compute a MDS configuration even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run 
@@ -38,33 +68,32 @@
 #' @export
 gower_interpolation_mds <- function(x, l, k, dist_fn = stats::dist, ...) {
 
-  nrow_x <- nrow(x)
-  p <- ceiling(nrow_x / l)
+  n <- nrow(x)
+  idexes_partition <- get_partitions_for_gower_interpolation(n = n, l = l)
+  num_partitions <- length(idexes_partition)
 
-  if (p < 1) {
-    p <- 1
-  } 
+  if (num_partitions <= 1) {
 
-  if (p > 1) {
+    # It is possible to run MDS directly
+    mds <- classical_mds(x = x, k = k, dist_fn = dist_fn, ...)
+    points <- mds$points
+    eigen <- mds$eigen/n
+    list_to_return <- list(points = points, eigen = eigen)
 
-    initial_row_names <- row.names(x)
-    row.names(x) <- 1:nrow(x)
-    
-    # Do MDS with the first group and then use the Gower interpolation formula
-    sample_distribution <- sample(x = p, size = nrow_x, replace = TRUE)
+  } else {
 
     # Get the first group 
-    ind_1 <- which(sample_distribution == 1)
+    ind_1 <-idexes_partition[[1]]
     n_1 <- length(ind_1)
+    idexes_partition[[1]] <- NULL
 
-    # Do MDS with the first group
-    submatrix_data <- x[ind_1, ,drop = FALSE]
-    mds_eig <- classical_mds(x = submatrix_data, k = k, dist_fn = dist_fn, return_distance_matrix = TRUE, ...)
+    # Obtain MDS for the first group
+    x_1 <- x[ind_1, , drop = FALSE]
+    mds_eig <- classical_mds(x = x_1, k = k, dist_fn = dist_fn, return_distance_matrix = TRUE, ...)
     distance_matrix <- mds_eig$distance
 
     M <- mds_eig$points
-    eigen <- mds_eig$eig / nrow(M)
-    cum_mds <- M
+    eigen <- mds_eig$eigen/nrow(M)
 
     # Calculations needed to do Gower interpolation
     delta_matrix <- distance_matrix^2
@@ -76,37 +105,34 @@ gower_interpolation_mds <- function(x, l, k, dist_fn = stats::dist, ...) {
     S <- 1 / (nrow(M)-1) * t(M) %*% M
     S_inv <- solve(S)
 
-    # For the rest of the groups, do the interpolation
-    for (i_group in 2:p) {
-      # Filtering the data
-      ind_i_group <- which(sample_distribution == i_group)
-      submatrix_data <- x[ind_i_group, ,drop = FALSE]
+    # Get x for each partition
+    x_other <- lapply(idexes_partition, function(matrix, idx) { matrix[idx, , drop = FALSE] }, matrix = x)
 
-      # A matrix
-      distance_matrix_filter <- pdist::pdist(
-        X = submatrix_data,
-        Y = x[ind_1, ,drop = FALSE]
-      )
+    # Obtain the distance matrix with respect the first partition
+    distance_matrix_filter <- lapply(x_other, function(X, Y){ pdist::pdist(X, Y) }, Y = x_1)
+    distance_matrix_filter <- lapply(distance_matrix_filter, as.matrix)
 
-      distance_matrix_filter <- as.matrix(distance_matrix_filter)
-      A <- distance_matrix_filter^2
-      ones_vector <- rep(1, length(ind_i_group))
-      MDS_i_group <- 1 / (2 * n_1) * (ones_vector %*% t(g_vector) - A) %*% M %*% S_inv
-      row.names(MDS_i_group) <- row.names(submatrix_data)
-      cum_mds <- rbind(cum_mds, MDS_i_group)
-    }
+    # A matrix
+    A <- lapply(distance_matrix_filter, function(x){ x^2 })
+    ones_vector <- lapply(idexes_partition, function(times, x){ rep(x, length(times)) }, x = 1)
 
-    cum_mds <- cum_mds[order(as.numeric(row.names(cum_mds))), , drop = FALSE]
-    row.names(cum_mds) <- initial_row_names
-    row.names(x) <- initial_row_names
+    # Get MDS for all the partitions
+    MDS <- mapply(function(A, ones_vector) { 1 / (2 * n_1) * (ones_vector %*% t(g_vector) - A) %*% M %*% S_inv  }, 
+                  A = A, ones_vector = ones_vector, SIMPLIFY = FALSE)
 
-  } else {
-    # It is possible to run MDS directly
-    mds_eig <- classical_mds(x = x, k = k, dist_fn = dist_fn, return_distance_matrix = TRUE, ...)
-    distance_matrix <- mds_eig$distance
-    cum_mds <- mds_eig$points
-    eigen <- mds_eig$eig / nrow_x
+    # Get cummulative MDS
+    cum_mds <- Reduce(rbind, MDS)
+    cum_mds <- Reduce(rbind, list(M, cum_mds))
+
+    # Reorder the rows
+    idexes_order <- Reduce(c, idexes_partition)
+    idexes_order <- Reduce(c, list(ind_1, idexes_order))
+    cum_mds <- cum_mds[order(idexes_order), , drop = FALSE]
+
+    # List to return
+    list_to_return <- list(points = cum_mds, eigen = eigen)
   }
 
-  return(list(points = cum_mds, eigen = eigen))
+  return(list_to_return)
+
 }
