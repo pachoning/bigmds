@@ -41,12 +41,17 @@ p submatrices (\emph{Divide and Conquer strategy}).
 In order to obtain p, \code{tie} and \code{l} are taken into account: p=n/\code{(l-tie)}. This allows to use
 \code{cmdscale} function in every submatrix.
 
-Given a MDS solution, any rotation is another (valid) MDS solution. It means that every partition has its
-own coordinate system.
+Taking into account that given a MDS solution, any rotation is another (valid) MDS solution, it is needed a way to
+obtain the same coordinate system for all the partitions.
 
-In order to keep the same coordinate system, every two consecutive submatrices are forced to share \code{tie}
-points. These points are used to align the corresponding MDS configurations. Such an alignment is performed by means
-of Procrustes.
+To achieve such a common coordinate system, the algorithm starts by taking the first partition and calculating a MDS
+configuration as well as a subsample of size \code{tie} (from the partition, not from its MDS configuration).
+These \code{tie} points will be used in order to force the other partitions to have the same coordinate system as the
+first one.
+
+Given a partition, the \code{tie} points are appended to it. After that, a MDS configuration is obtained. Therefore,
+for these \code{tie} points there are two MDS solutions. In order to aligned them, Procrustes parameters are
+obtained. These parameters are applied to the MDS configuration of the partition.
 }
 \examples{
 set.seed(42)
