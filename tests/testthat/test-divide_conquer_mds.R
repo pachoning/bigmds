@@ -1,6 +1,6 @@
 test_that("Partitions for Divide and Conquer returns a valid partition dataset", {
   partition <- get_partitions_for_divide_conquer(n = 1000, l = 100, tie = 5, k = 10)
-  p <- max(partition)
+  p <- length(partition)
   expect_equal(p, 11)
 })
 

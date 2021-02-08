@@ -1,6 +1,6 @@
 test_that("Partitions for Fast returns a valid partition dataset", {
   partition <- get_partitions_for_fast(n = 1000, l = 100, s = 5, k = 10)
-  p <- max(partition)
+  p <- length(partition)
   expect_equal(p, 20)
 })
 
