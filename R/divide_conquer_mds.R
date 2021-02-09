@@ -101,10 +101,9 @@ divide_conquer_mds <- function(x, l, tie, k, dist_fn = stats::dist, ...) {
 
   if (n_row_x <= l) {
     mds_to_return <- classical_mds(x = x, k = k, dist_fn = dist_fn, ...)
-    mds_to_return$eigen <- mds_to_return$eigen / nrow(x)
+    mds_to_return$eigen <- mds_to_return$eigen/nrow(x)
 
   } else {
-    
     # Generate indexes list. Each element correspond to the index of the partition
     idx <- get_partitions_for_divide_conquer(n = n_row_x, l = l, tie = tie, k = k)
     num_partitions <- length(idx)
@@ -135,7 +134,7 @@ divide_conquer_mds <- function(x, l, tie, k, dist_fn = stats::dist, ...) {
     mds_join_1_eigen <- lapply(mds_join_1, function(x) x$eigen)
 
     # For each partition, divide the matrix into two part: 
-    ## first corresponding to the sample of the first partition
+    # first corresponding to the sample of the first partition
     # the rest of the matrix corresponding to the observations of each matrix
     mds_division <- lapply(mds_join_1_points, divide_matrix, long = tie)
     mds_division_first <- lapply(mds_division, function(x) x$first)
@@ -152,12 +151,9 @@ divide_conquer_mds <- function(x, l, tie, k, dist_fn = stats::dist, ...) {
     mds_solution <- Reduce(rbind, list(mds_1_points, mds_solution))
 
     # Get eigenvalues
-    eigen <- mapply(function(x, y) x/length(y), x = mds_join_1_eigen, y = idx)
+    eigen <- mapply(function(x, y) x/length(y), x = mds_join_1_eigen, y = idx, SIMPLIFY = FALSE)
     eigen <- Reduce(`+`, eigen)
-
-    mds_1_eigen <- mds_1_eigen/length(mds_1_eigen)
-
-    eigen <- Reduce(`+`, list(eigen, mds_1_eigen))
+    eigen <- Reduce(`+`, list(mds_1_eigen, eigen))
     eigen <- eigen/num_partitions
 
     mds_to_return <- list(points = mds_solution, eigen = eigen)
