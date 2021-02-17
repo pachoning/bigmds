@@ -1,6 +1,11 @@
 get_partitions_for_fast <- function(n, l, s, k) {
 
-  p <- ceiling(l/s)
+  if (n/l<1.1) {
+    p <- 2
+  } else {
+    p <- ceiling(l/s)
+  }
+
   min_sample_size <- max(k + 2, s)
   size_partition <- floor(n/p)
   last_sample_size <- n - (p-1)*size_partition
