@@ -40,10 +40,12 @@ get_partitions_for_divide_conquer <- function(n, l, tie, k) {
 
 
 divide_matrix <- function(x, long) {
+
   n_row <- nrow(x)
   x_first <- x[1:long, , drop = FALSE]
   x_rest <- x[(long+1):n_row, , drop = FALSE]
   return(list(first = x_first, rest = x_rest))
+
 }
 
 

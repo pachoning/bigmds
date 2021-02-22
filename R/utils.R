@@ -10,7 +10,7 @@ perform_procrustes <- function(x, target, matrix_to_transform, translation = FAL
   if (n_col != ncol(target)) {
     stop("x and target do not have same number of columns.\n")
   }
-  
+
   if (n_col != ncol(matrix_to_transform)) {
     stop("x and matrix_to_transform do not have same number of columns.\n")
   }
