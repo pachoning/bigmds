@@ -64,7 +64,7 @@ get_partitions_for_gower_interpolation <- function(n, l, k) {
 #'@references
 #'Gower, J.C. and D.J, Hand (1995). *Biplots*. Volume 54. CRC Press.
 #'
-#'Borg I and P. Groenen (1997). *Modern Multidimensional Scaling: Theory and Applications*. New York: Springer. pp. 340-342.
+#'Borg, I. and Groenen, P. (2005). *Modern Multidimensional Scaling: Theory and Applications*. Springer.
 #' @export
 gower_interpolation_mds <- function(x, l, k, dist_fn = stats::dist, ...) {
 

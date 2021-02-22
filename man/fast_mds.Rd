@@ -61,5 +61,5 @@ Tynia, Y., L. Jinze, M. Leonard, and W. Wei (2006). \emph{A fast approximation t
 the ECCV Workshop on Computation Intensive Methods for Computer Vision (CIMCV).
 \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.79.2445}
 
-Borg I and P. Groenen (1997). \emph{Modern Multidimensional Scaling: Theory and Applications}. New York: Springer. pp. 340-342.
+Borg, I. and Groenen, P. (2005). \emph{Modern Multidimensional Scaling: Theory and Applications}. Springer.
 }

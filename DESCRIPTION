@@ -18,7 +18,7 @@ Description: MDS is a statistic tool for reduction of dimensionality, using as i
   - Divide and Conquer MDS developed by Delicado and Pachon-Garcia, (2020) <arXiv:2007.11919>.
   - Fast MDS, which is an implementation of Tynia, Y., L. Jinze, M. Leonard, and W. Wei, (2006) <doi:10.1.1.79.2445>.
   - MDS based on Gower interpolation, which uses Gower interpolation formula as described in Gower, J.C. and D.J, Hand (1995, ISBN: 978-0-412-71630-0).
-  The main idea of these methods is based on partitioning the dataset into small pieces, where classical methods can work. In order to align all the solutions, it is used Procrustes formula as described in Borg I and P. Groenen (1997, ISBN: 78-0-387-28981-6).
+  The main idea of these methods is based on partitioning the dataset into small pieces, where classical methods can work. In order to align all the solutions, it is used Procrustes formula as described in Borg, I. and Groenen, P. (2005, ISBN : 978-0-387-25150-9).
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

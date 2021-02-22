@@ -83,7 +83,7 @@ get_partitions_for_fast <- function(n, l, s, k) {
 #'the ECCV Workshop on Computation Intensive Methods for Computer Vision (CIMCV).
 #'\url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.79.2445}
 #' 
-#'Borg I and P. Groenen (1997). *Modern Multidimensional Scaling: Theory and Applications*. New York: Springer. pp. 340-342.
+#'Borg, I. and Groenen, P. (2005). *Modern Multidimensional Scaling: Theory and Applications*. Springer.
 #'@export
 fast_mds <- function(x, l, s, k, dist_fn = stats::dist, ...) {
 

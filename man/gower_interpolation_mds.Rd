@@ -54,5 +54,5 @@ var(mds$points)
 \references{
 Gower, J.C. and D.J, Hand (1995). \emph{Biplots}. Volume 54. CRC Press.
 
-Borg I and P. Groenen (1997). \emph{Modern Multidimensional Scaling: Theory and Applications}. New York: Springer. pp. 340-342.
+Borg, I. and Groenen, P. (2005). \emph{Modern Multidimensional Scaling: Theory and Applications}. Springer.
 }

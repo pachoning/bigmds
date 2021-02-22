@@ -65,5 +65,5 @@ var(mds$points)
 Delicado P. and C. Pachon-Garcia (2020). \emph{Multidimensional Scaling for Big Data}.
 \url{https://arxiv.org/abs/2007.11919}
 
-Borg I and P. Groenen (1997). \emph{Modern Multidimensional Scaling: Theory and Applications}. New York: Springer. pp. 340-342.
+Borg, I. and Groenen, P. (2005). \emph{Modern Multidimensional Scaling: Theory and Applications}. Springer.
 }

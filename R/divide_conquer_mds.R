@@ -95,7 +95,7 @@ divide_matrix <- function(x, long) {
 #'Delicado P. and C. Pachon-Garcia (2020). *Multidimensional Scaling for Big Data*.
 #'\url{https://arxiv.org/abs/2007.11919}
 #' 
-#'Borg I and P. Groenen (1997). *Modern Multidimensional Scaling: Theory and Applications*. New York: Springer. pp. 340-342.
+#'Borg, I. and Groenen, P. (2005). *Modern Multidimensional Scaling: Theory and Applications*. Springer.
 #'@export
 divide_conquer_mds <- function(x, l, tie, k, dist_fn = stats::dist, ...) {
 
