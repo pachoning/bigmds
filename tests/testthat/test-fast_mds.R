@@ -10,5 +10,5 @@ test_that("Fast MDS returns a valid MDS configuration", {
   cmds_proc <- perform_procrustes(x = cmds$points, target = x, matrix_to_transform = cmds$points, 
                                   translation = FALSE, dilation = FALSE)
   corr_first <- cor(x[, 1], cmds_proc[, 1])
-  expect_gt(corr_first, 0.9)
+  expect_gt(corr_first, 079)
 })
