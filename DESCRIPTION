@@ -3,7 +3,7 @@ Title: Multidimensional Scaling for Big Data
 Version: 1.0.0
 Authors@R: 
     c(person(given = "Cristian",
-           family = "Pachon",
+           family = "Pachón García",
            role = c("aut", "cre"),
            email = "cc.pachon@gmail.com",
            comment = c(ORCID = "0000-0001-9518-4874")),
