@@ -14,7 +14,6 @@
 #### Comments
 
 * The note is related to a some possible misspelling. However, thy are not misspell names.
-* The note is related to some unexisting DOI, However, it exists.
 
 ### First submission
 
