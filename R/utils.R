@@ -50,11 +50,12 @@ perform_procrustes <- function(x, target, matrix_to_transform, translation = FAL
   return(dilation_factor * matrix_to_transform %*% rotation_matrix + translation_matrix)
 }
 
-
-classical_mds <- function(x, k, dist_fn = stats::dist, return_distance_matrix = FALSE, ...) {
+classical_mds <- function(x, k, dist_fn, return_distance_matrix = FALSE, ...) {
 
   if (!is.function(dist_fn)) {
     stop("dist_fn must be a function")
+  } else if (any(is.na(x))) {
+    stop("There are some NA values in the data. Please remove them")
   }
 
   mds <- list()
@@ -63,6 +64,7 @@ classical_mds <- function(x, k, dist_fn = stats::dist, return_distance_matrix = 
 
   mds$points <- mds_result$points
   mds$eigen <- mds_result$eig[1:k]
+  mds$GOF <- mds_result$GOF
 
   if (return_distance_matrix) {
     mds$distance <- as.matrix(dist_matrix)
