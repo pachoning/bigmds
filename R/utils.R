@@ -32,15 +32,15 @@ perform_procrustes <- function(x, target, matrix_to_transform, translation = FAL
   n_col <- ncol(x)
 
   if (n_row != nrow(target)) {
-    stop("\"x\" and \"target\" do not have same number of rows")
+    stop("\"x\" and \"target\" do not have the same number of rows")
   }
 
   if (n_col != ncol(target)) {
-    stop("\"x\" and \"target\" do not have same number of columns")
+    stop("\"x\" and \"target\" do not have the same number of columns")
   }
 
   if (n_col != ncol(matrix_to_transform)) {
-    stop("\"x\" and \"matrix_to_transform\" do not have same number of columns")
+    stop("\"x\" and \"matrix_to_transform\" do not have the same number of columns")
   }
 
   procrustes_parameters <- get_procrustes_parameters(x = x, target = target, translation = translation)
