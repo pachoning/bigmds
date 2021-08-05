@@ -2,67 +2,80 @@
 % Please edit documentation in R/divide_conquer_mds.R
 \name{divide_conquer_mds}
 \alias{divide_conquer_mds}
-\title{Divide and Conquer MDS}
+\title{Divide-and-conquer MDS}
 \usage{
-divide_conquer_mds(x, l, tie, k, dist_fn = stats::dist, ...)
+divide_conquer_mds(x, l, c_points, r, n_cores = 1, dist_fn = stats::dist, ...)
 }
 \arguments{
-\item{x}{A matrix with n individuals (rows) and q variables (columns).}
+\item{x}{A matrix with \eqn{n} individuals (rows) and \eqn{k} variables (columns).}
 
-\item{l}{The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes
-\code{cmdscale()} be run without any computational issues.}
+\item{l}{The size for which classical MDS can be computed efficiently
+(using \code{cmdscale} function). It means that if \eqn{\bar{l}} is the largest number
+such that classical MDS runs efficiently, then \code{l}\eqn{\leq \bar{l}}.}
 
-\item{tie}{Number of points used to align the MDS solutions obtained by the division of \code{x} into p submatrices.
-Recommended value: \code{2·k}.}
+\item{c_points}{Number of points used to align the MDS solutions obtained by the
+division of \code{x} into \eqn{p} submatrices. Recommended value: \code{2·r}.}
 
-\item{k}{Number of principal coordinates to be extracted.}
+\item{r}{Number of principal coordinates to be extracted.}
 
-\item{dist_fn}{Distance function to be used for obtaining a MDS configuration.}
+\item{n_cores}{Number of cores wanted to use to run the algorithm.}
+
+\item{dist_fn}{Distance function used to compute the distance between the rows.}
 
 \item{...}{Further arguments passed to \code{dist_fn} function.}
 }
 \value{
 Returns a list containing the following elements:
 \describe{
-\item{points}{A matrix that consists of n individuals (rows) and \code{k} variables (columns) corresponding to the
-MDS coordinates.}
-\item{eigen}{The first \code{k} eigenvalues.}
+\item{points}{A matrix that consists of \eqn{n} individuals (rows)
+and \code{r} variables (columns) corresponding to the MDS coordinates. Since
+we are performing a dimensionality reduction, \code{r}\eqn{<<k}}
+\item{eigen}{The first \code{r} largest eigenvalues:
+\eqn{\bar{\lambda}_i, i \in  \{1, \dots, r\} }, where
+\eqn{\bar{\lambda}_i = 1/p \sum_{j=1}^{p}\lambda_j/n_j},
+being \eqn{n_j} the size of the partition \eqn{j}.}
+\item{GOF}{a numeric vector of length 2.
+
+The first element corresponds to
+\eqn{1/n \sum_{j=1}^{p}n_jG_1^j}, where
+\eqn{G_1^j = \sum_{i = 1}^{r} \lambda_{i}^{j}/ \sum_{i = 1}^{n-1} |\lambda_{i}^{j}|}.
+
+The second element corresponds to
+\eqn{1/n \sum_{j=1}^{p}n_jG_2^j} where
+\eqn{G_2^j = \sum_{i = 1}^{r} \lambda_{i}^{j}/ \sum_{i = 1}^{n-1} max(\lambda_{i}^{j}, 0).}}
 }
 }
 \description{
-Performs \emph{Multidimensional Scaling} for big datasets using a Divide and Conquer strategy. This method can
-compute a MDS configuration even when the dataset is so large that classical MDS methods (\code{cmdscale}) can not be run
-due to computational problems.
+Roughly speaking, a large data set is divided into parts, then
+MDS is performed over every part and, finally, the partial configurations are
+combined so that all the points lie on the same coordinate system.
 }
 \details{
-In order to obtain a MDS configuration for the entire matrix \code{x}, it is needed to break the dataset into
-p submatrices (\emph{Divide and Conquer strategy}).
+Let \eqn{n} be the number of observations of the original data set, which is
+divided into \eqn{p} parts of size \code{l}, where \code{l} \eqn{\bar{l}}, being
+\eqn{\bar{l}} the largest number such that classical MDS runs efficiently for a
+distance matrix of dimension \eqn{\bar{l} \times \bar{l}}.
 
-In order to obtain p, \code{tie} and \code{l} are taken into account: p=n/\code{(l-tie)}. This allows to use
-\code{cmdscale} function in every submatrix.
-
-Taking into account that given a MDS solution, any rotation is another (valid) MDS solution, it is needed a way to
-obtain the same coordinate system for all the partitions.
-
-To achieve such a common coordinate system, the algorithm starts by taking the first partition and calculating a MDS
-configuration as well as a subsample of size \code{tie} (from the partition, not from its MDS configuration).
-These \code{tie} points will be used in order to force the other partitions to have the same coordinate system as the
-first one.
-
-Given a partition, the \code{tie} points are appended to it. After that, a MDS configuration is obtained. Therefore,
-for these \code{tie} points there are two MDS solutions. In order to aligned them, Procrustes parameters are
-obtained. These parameters are applied to the MDS configuration of the partition.
+The \eqn{p} parts into which the data set is divided must share a certain
+number of points, so that it is possible to connect the MDS partial configurations
+obtained from each part. Let \code{c_points} be the amount of connecting points
+shared by all the configurations. This number \code{c_points} should be large enough
+to guarantee good links between partial configurations, but as small as possible
+to favor efficient computations. Given that the partial configurations will
+be connected by a Procrustes transformation, \code{c_points} must be at least equal
+to the required  low dimensional configuration we are looking for when applying
+classical MDS to every part of the data set.
 }
 \examples{
 set.seed(42)
 x <- matrix(data = rnorm(4*10000), nrow = 10000) \%*\% diag(c(15, 10, 1, 1))
-mds <- divide_conquer_mds(x = x, l = 200, tie = 2*2, k = 2, dist_fn = stats::dist)
-head(cbind(mds$points, x[, 1:2]))
+mds <- divide_conquer_mds(x = x, l = 200, c_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
+cbind(mds$points[1:3, ], x[1:3, ]))
 var(x)
 var(mds$points)
 }
 \references{
-Delicado P. and C. Pachon-Garcia (2020). \emph{Multidimensional Scaling for Big Data}.
+Delicado P. and C. Pachon-Garcia (2021). \emph{Multidimensional Scaling for Big Data}.
 \url{https://arxiv.org/abs/2007.11919}
 
 Borg, I. and Groenen, P. (2005). \emph{Modern Multidimensional Scaling: Theory and Applications}. Springer.
