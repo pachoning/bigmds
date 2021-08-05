@@ -1,164 +1,201 @@
-get_partitions_for_divide_conquer <- function(n, l, tie, k) {
+get_partitions_for_divide_conquer <- function(n, l, c_points, r) {
 
-  size_partition <- l-tie
-  p <- ceiling(n/size_partition)
-  min_sample_size <- max(k, tie)
-  partition_sample_size <- l-tie
-  last_sample_size <- n-(p-1)*partition_sample_size
-  list_indexes <- list()
-
-  if (l-tie <= 0) {
-    stop("l must be greater than tie")
-  } else if(l-tie <= tie) {
-    stop("l-tie must be greater than tie")
-  } else if(l-tie <= k) {
-    stop("l-tie must be greater than k")
+  if (l-c_points <= 0) {
+    stop("\"l\" must be greater than \"c_points\"")
+  } else if (l-c_points <= c_points) {
+    stop("\"l-c_points\" must be greater than \"c_points\"")
+  } else if (l-c_points <= r) {
+    stop ("\"l-c_points\" must be greater than \"r\"")
   }
 
-  if (last_sample_size < min_sample_size & last_sample_size > 0) {
-    p <- p - 1
-  }
+  permutation <- sample(x = n, size = n, replace = FALSE)
 
-  for (i in 1:p) {
-    if (i == 1) {
-      ini <- 1
-      end <- size_partition
-    } else if (i < p) {
-      ini <- end + 1
-      end <- (ini-1) + size_partition
-    } else {
-      ini <- end + 1
-      end <- n
+  if (n<=l) {
+    list_indexes <- list(permutation)
+  } else {
+    min_sample_size <- max(r+2, c_points)
+    p <- 1 + ceiling((n-l)/(l-c_points))
+    last_partition_sample_size <- n - (l + (p-2) * (l-c_points))
+
+    if (last_partition_sample_size < min_sample_size & last_partition_sample_size > 0) {
+      p <- p - 1
+      last_partition_sample_size <- n - (l + (p-2) * (l-c_points))
     }
 
-    list_indexes[[i]] <- ini:end
+    first_parition <- permutation[1:l]
+    last_partition <- permutation[(n-last_partition_sample_size+1):n]
+    list_indexes <- split(x = permutation[(l+1):(n-last_partition_sample_size)], f = 1:(p-2))
+    names(list_indexes) <- NULL
+    list_indexes[[p-1]] <- list_indexes[[1]]
+    list_indexes[[p]] <- last_partition
+    list_indexes[[1]] <- first_parition
   }
 
   return(list_indexes)
-
 }
 
-
-divide_matrix <- function(x, long) {
-
-  n_row <- nrow(x)
-  x_first <- x[1:long, , drop = FALSE]
-  x_rest <- x[(long+1):n_row, , drop = FALSE]
-  return(list(first = x_first, rest = x_rest))
-
+split_matrix <- function(matrix, num_points) {
+  x_1 <- matrix[1:num_points, , drop = FALSE]
+  x_2 <- matrix[(num_points + 1):nrow(matrix), , drop = FALSE]
+  return(list(x_1, x_2))
 }
 
+main_divide_conquer_mds <- function(idx, x, x_sample_1, r, original_mds_sample_1, dist_fn, ...) {
+  # Filter the matrix
+  x_filtered <- x[idx, , drop = FALSE]
 
-#'@title Divide and Conquer MDS
-#'@description Performs *Multidimensional Scaling* for big datasets using a Divide and Conquer strategy. This method can 
-#'compute a MDS configuration even when the dataset is so large that classical MDS methods (`cmdscale`) can not be run 
-#'due to computational problems.
-#'@details In order to obtain a MDS configuration for the entire matrix \code{x}, it is needed to break the dataset into 
-#'p submatrices (*Divide and Conquer strategy*).
-#' 
-#'In order to obtain p, \code{tie} and \code{l} are taken into account: p=n/\code{(l-tie)}. This allows to use 
-#'`cmdscale` function in every submatrix.
+  # Join with the sample from the first partition
+  x_join_sample_1 <- rbind(x_sample_1, x_filtered)
+
+  # Perform MDS
+  mds_all <- classical_mds(x = x_join_sample_1, k = r, dist_fn = dist_fn, ...)
+  mds_points <- mds_all$points
+  mds_eigen <- mds_all$eigen
+  mds_GOF <- mds_all$GOF
+
+  # Split MDS into two parts: the first part is the MDS for the sampling points of the
+  # first partition and the second part is the MDS for the points of the partition
+  mds_split <- split_matrix(matrix = mds_points, num_points = nrow(x_sample_1))
+  mds_sample_1 <- mds_split[[1]]
+  mds_partition <- mds_split[[2]]
+  mds_procrustes <- perform_procrustes(x = mds_sample_1, 
+                                       target = original_mds_sample_1, 
+                                       matrix_to_transform = mds_partition, 
+                                       translation = FALSE)
+
+  mds_eigen <- mds_eigen/length(idx)
+  mds_GOF <- mds_GOF*length(idx)
+
+  return(list(points = mds_procrustes, eigen = mds_eigen, GOF = mds_GOF))
+}
+
+#'@title Divide-and-conquer MDS
 #'
-#'Taking into account that given a MDS solution, any rotation is another (valid) MDS solution, it is needed a way to 
-#'obtain the same coordinate system for all the partitions. 
+#'@description Roughly speaking, a large data set is divided into parts, then 
+#'MDS is performed over every part and, finally, the partial configurations are 
+#'combined so that all the points lie on the same coordinate system.
 #'
-#'To achieve such a common coordinate system, the algorithm starts by taking the first partition and calculating a MDS 
-#'configuration as well as a subsample of size \code{tie} (from the partition, not from its MDS configuration). 
-#'These \code{tie} points will be used in order to force the other partitions to have the same coordinate system as the 
-#'first one.
+#'@details Let \eqn{n} be the number of observations of the original data set, which is 
+#'divided into \eqn{p} parts of size \code{l}, where \code{l} \eqn{\bar{l}}, being
+#'\eqn{\bar{l}} the largest number such that classical MDS runs efficiently for a 
+#'distance matrix of dimension \eqn{\bar{l} \times \bar{l}}.
 #'
-#'Given a partition, the \code{tie} points are appended to it. After that, a MDS configuration is obtained. Therefore, 
-#'for these \code{tie} points there are two MDS solutions. In order to aligned them, Procrustes parameters are 
-#'obtained. These parameters are applied to the MDS configuration of the partition.
-#'@param x A matrix with n individuals (rows) and q variables (columns).
-#'@param l The largest value which allows classical MDS to be computed efficiently, i.e, the largest value which makes 
-#'`cmdscale()` be run without any computational issues.
-#'@param tie Number of points used to align the MDS solutions obtained by the division of \code{x} into p submatrices.
-#'Recommended value: \code{2·k}.
-#'@param k Number of principal coordinates to be extracted.
-#'@param dist_fn Distance function to be used for obtaining a MDS configuration.
+#'The \eqn{p} parts into which the data set is divided must share a certain 
+#'number of points, so that it is possible to connect the MDS partial configurations 
+#'obtained from each part. Let \code{c_points} be the amount of connecting points 
+#'shared by all the configurations. This number \code{c_points} should be large enough 
+#'to guarantee good links between partial configurations, but as small as possible 
+#'to favor efficient computations. Given that the partial configurations will 
+#'be connected by a Procrustes transformation, \code{c_points} must be at least equal 
+#'to the required  low dimensional configuration we are looking for when applying 
+#'classical MDS to every part of the data set.
+#'
+#'@param x A matrix with \eqn{n} individuals (rows) and \eqn{k} variables (columns).
+#'@param l The size for which classical MDS can be computed efficiently 
+#'(using `cmdscale` function). It means that if \eqn{\bar{l}} is the largest number 
+#'such that classical MDS runs efficiently, then \code{l}\eqn{\leq \bar{l}}.
+#'@param c_points Number of points used to align the MDS solutions obtained by the 
+#'division of \code{x} into \eqn{p} submatrices. Recommended value: \code{2·r}.
+#'@param r Number of principal coordinates to be extracted.
+#'@param n_cores Number of cores wanted to use to run the algorithm.
+#'@param dist_fn Distance function used to compute the distance between the rows.
 #'@param ... Further arguments passed to \code{dist_fn} function.
+#'
 #'@return Returns a list containing the following elements:
 #' \describe{
-#'   \item{points}{A matrix that consists of n individuals (rows) and \code{k} variables (columns) corresponding to the 
-#'   MDS coordinates.}
-#'   \item{eigen}{The first \code{k} eigenvalues.}
+#'   \item{points}{A matrix that consists of \eqn{n} individuals (rows) 
+#'   and \code{r} variables (columns) corresponding to the MDS coordinates. Since 
+#'   we are performing a dimensionality reduction, \code{r}\eqn{<<k}}
+#'   \item{eigen}{The first \code{r} largest eigenvalues: 
+#'   \eqn{\bar{\lambda}_i, i \in  \{1, \dots, r\} }, where
+#'   \eqn{\bar{\lambda}_i = 1/p \sum_{j=1}^{p}\lambda_j/n_j}, 
+#'   being \eqn{n_j} the size of the partition \eqn{j}.}
+#'   \item{GOF}{a numeric vector of length 2. 
+#'   
+#'   The first element corresponds to
+#'   \eqn{1/n \sum_{j=1}^{p}n_jG_1^j}, where 
+#'   \eqn{G_1^j = \sum_{i = 1}^{r} \lambda_{i}^{j}/ \sum_{i = 1}^{n-1} |\lambda_{i}^{j}|}. 
+#'   
+#'   The second element corresponds to 
+#'    \eqn{1/n \sum_{j=1}^{p}n_jG_2^j} where 
+#'    \eqn{G_2^j = \sum_{i = 1}^{r} \lambda_{i}^{j}/ \sum_{i = 1}^{n-1} max(\lambda_{i}^{j}, 0).}}
 #'}
+#'
 #'@examples
 #'set.seed(42)
 #'x <- matrix(data = rnorm(4*10000), nrow = 10000) %*% diag(c(15, 10, 1, 1))
-#'mds <- divide_conquer_mds(x = x, l = 200, tie = 2*2, k = 2, dist_fn = stats::dist)
-#'head(cbind(mds$points, x[, 1:2]))
+#'mds <- divide_conquer_mds(x = x, l = 200, c_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
+#'cbind(mds$points[1:3, ], x[1:3, ]))
 #'var(x)
 #'var(mds$points)
 #'@references
-#'Delicado P. and C. Pachon-Garcia (2020). *Multidimensional Scaling for Big Data*.
+#'Delicado P. and C. Pachon-Garcia (2021). *Multidimensional Scaling for Big Data*.
 #'\url{https://arxiv.org/abs/2007.11919}
 #' 
 #'Borg, I. and Groenen, P. (2005). *Modern Multidimensional Scaling: Theory and Applications*. Springer.
 #'@export
-divide_conquer_mds <- function(x, l, tie, k, dist_fn = stats::dist, ...) {
+divide_conquer_mds <- function(x, l, c_points, r, n_cores = 1, dist_fn = stats::dist, ...) {
 
   n_row_x <- nrow(x)
 
   if (n_row_x <= l) {
-    mds_to_return <- classical_mds(x = x, k = k, dist_fn = dist_fn, ...)
-    mds_to_return$eigen <- mds_to_return$eigen/nrow(x)
+    mds_to_return <- classical_mds(x = x, k = r, dist_fn = dist_fn, ...)
+    mds_to_return$eigen <- mds_to_return$eigen/n_row_x
+    mds_to_return$GOF <- mds_to_return$GOF
 
   } else {
-    # Generate indexes list. Each element correspond to the index of the partition
-    idx <- get_partitions_for_divide_conquer(n = n_row_x, l = l, tie = tie, k = k)
+
+    mds_matrix <- matrix(data = NA, nrow = n_row_x, ncol = r)
+
+    # Generate indexes list. Each element corresponds to the index of the partition
+    idx <- get_partitions_for_divide_conquer(n = n_row_x, l = l, c_points = c_points, r = r)
     num_partitions <- length(idx)
+    length_1 <- length(idx[[1]])
 
-    # Get the elements of the first partition and drop from the list
-    idx_1 <- idx[[1]]
-    idx[[1]] <- NULL 
-
-    # Partition x
-    x_partition <- lapply(idx, function(rows, matrix) matrix[rows, , drop = FALSE], matrix = x)
+    # Perform MDS for the first partition
+    x_1 <- x[idx[[1]], , drop = FALSE]
+    mds_1 <- classical_mds(x = x_1, k = r, dist_fn = dist_fn, ...)
+    mds_1_points <- mds_1$points
+    mds_1_eigen <- mds_1$eigen/length_1
+    mds_1_GOF <- mds_1$GOF*length_1
 
     # Take a sample from the first partition
-    sample_first_partition <- sample(x = idx_1, size = tie, replace = FALSE)
-    x_1 <- x[idx_1, , drop = FALSE]
-    x_sample_1 <- x_1[sample_first_partition, , drop = FALSE]
+    sample_1 <- sample(x = length_1, size = c_points, replace = FALSE)
+    x_sample_1 <- x_1[sample_1, ,drop = FALSE]
+    mds_sample_1 <- mds_1_points[sample_1, , drop = FALSE]
 
-    # Join each partition with the sample from the first partition
-    x_join_1 <- lapply(x_partition, function(m_big, m_small) rbind(m_small, m_big), m_small = x_sample_1)
+    mds_others_results <- parallel::mclapply(idx[2:num_partitions],
+                                             main_divide_conquer_mds,
+                                             x = x,
+                                             x_sample_1 = x_sample_1,
+                                             r = r,
+                                             original_mds_sample_1 = mds_sample_1,
+                                             dist_fn = dist_fn,
+                                             mc.cores = n_cores,
+                                             ...)
 
-    # Perform MDS for each partition as well as for the first partition
-    mds_1 <- classical_mds(x = x_1, k = k, dist_fn = dist_fn, return_distance_matrix = FALSE, ...)
-    mds_1_points <- mds_1$points
-    mds_1_eigen <- mds_1$eigen/nrow(x_1)
-    mds_1_sample <- mds_1_points[sample_first_partition, ,drop = FALSE]
+    # Obtain points
+    mds_others_points <- do.call(rbind, parallel::mclapply(mds_others_results, function(x) x$points, mc.cores = n_cores))
+    mds_matrix[1:length_1, ] <- mds_1_points
+    mds_matrix[(length_1 + 1):n_row_x, ] <- mds_others_points
+    order_idx <- do.call(c, idx)
+    order_idx <- order(order_idx)
+    mds_matrix <- mds_matrix[order_idx, , drop = FALSE]
+    mds_matrix <- apply(mds_matrix, MARGIN = 2, FUN = function(x) x - mean(x))
+    mds_matrix <- mds_matrix %*% eigen(cov(mds_matrix))$vectors
 
-    mds_join_1 <- lapply(x_join_1, classical_mds, k = k, dist_fn = dist_fn, return_distance_matrix = FALSE)
-    mds_join_1_points <- lapply(mds_join_1, function(x) x$points)
-    mds_join_1_eigen <- lapply(mds_join_1, function(x) x$eigen)
-
-    # For each partition, divide the matrix into two part: 
-    # first corresponding to the sample of the first partition
-    # the rest of the matrix corresponding to the observations of each matrix
-    mds_division <- lapply(mds_join_1_points, divide_matrix, long = tie)
-    mds_division_first <- lapply(mds_division, function(x) x$first)
-    mds_division_rest <- lapply(mds_division, function(x) x$rest)
-
-    # Apply Procrustes for each partition
-    mds_procrustes <- mapply(FUN = perform_procrustes, 
-                             x = mds_division_first, 
-                             matrix_to_transform = mds_division_rest,
-                             MoreArgs = list(target = mds_1_sample, translation = FALSE, dilation = FALSE))
-
-    # Join all the solutions
-    mds_solution <- Reduce(rbind, mds_procrustes)
-    mds_solution <- Reduce(rbind, list(mds_1_points, mds_solution))
-
-    # Get eigenvalues
-    eigen <- mapply(function(x, y) x/length(y), x = mds_join_1_eigen, y = idx, SIMPLIFY = FALSE)
+    # Obtain eigenvalues
+    eigen <- parallel::mclapply(mds_others_results, function(x) x$eigen, mc.cores = n_cores)
+    eigen[[num_partitions]] <- mds_1_eigen
     eigen <- Reduce(`+`, eigen)
-    eigen <- Reduce(`+`, list(mds_1_eigen, eigen))
     eigen <- eigen/num_partitions
 
-    mds_to_return <- list(points = mds_solution, eigen = eigen)
+    # Obtain GOF
+    GOF <- parallel::mclapply(mds_others_results, function(x) x$GOF, mc.cores = n_cores)
+    GOF[[num_partitions]] <- mds_1_GOF
+    GOF <- Reduce(`+`, GOF)
+    GOF <- GOF/n_row_x
+    mds_to_return <- list(points = mds_matrix, eigen = eigen, GOF = GOF)
   }
 
   return(mds_to_return)
