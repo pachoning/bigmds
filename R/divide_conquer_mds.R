@@ -71,29 +71,30 @@ main_divide_conquer_mds <- function(idx, x, x_sample_1, r, original_mds_sample_1
 
 #'@title Divide-and-conquer MDS
 #'
-#'@description Roughly speaking, a large data set is divided into parts, then 
-#'MDS is performed over every part and, finally, the partial configurations are 
-#'combined so that all the points lie on the same coordinate system.
+#'@description Roughly speaking, a large data set, \code{x}, of size \eqn{n}  
+#'is divided into parts, then classical MDS is performed over every part and, 
+#'finally, the partial configurations are combined so that all the points lie 
+#'on the same coordinate system with the aim to obtain a global MDS configuration.
 #'
-#'@details Let \eqn{n} be the number of observations of the original data set, which is 
-#'divided into \eqn{p} parts of size \code{l}, where \code{l} \eqn{\bar{l}}, being
-#'\eqn{\bar{l}} the largest number such that classical MDS runs efficiently for a 
-#'distance matrix of dimension \eqn{\bar{l} \times \bar{l}}.
+#'@details The divide-and-conquer MDS starts dividing the \eqn{n} points into 
+#'\eqn{p} partitions: the first partition contains \code{l} points and the others
+#'contain \code{l-c_points} points. Therefore, \eqn{p = 1 + (n-}\code{l)/(l-c_points)}.
+#'The partitions are created at random without replacement. 
 #'
-#'The \eqn{p} parts into which the data set is divided must share a certain 
-#'number of points, so that it is possible to connect the MDS partial configurations 
-#'obtained from each part. Let \code{c_points} be the amount of connecting points 
-#'shared by all the configurations. This number \code{c_points} should be large enough 
-#'to guarantee good links between partial configurations, but as small as possible 
-#'to favor efficient computations. Given that the partial configurations will 
-#'be connected by a Procrustes transformation, \code{c_points} must be at least equal 
-#'to the required  low dimensional configuration we are looking for when applying 
-#'classical MDS to every part of the data set.
+#'Once the partitions are created, \code{c_points} different random 
+#'points are taken from the first partition and concatenated to the other 
+#'partitions After that, classical MDS is applied to each partition, 
+#'with target low dimensional configuration \code{r}.
 #'
-#'@param x A matrix with \eqn{n} individuals (rows) and \eqn{k} variables (columns).
+#'Since all the partitions share \code{c_points}
+#'points with the first one, Procrustes can be applied in order to align all
+#'the configurations. Finally, all the configurations are
+#'concatenated in order to obtain a global MDS configuration.
+#'
+#'@param x A matrix with \eqn{n} points (rows) and \eqn{k} variables (columns).
 #'@param l The size for which classical MDS can be computed efficiently 
-#'(using `cmdscale` function). It means that if \eqn{\bar{l}} is the largest number 
-#'such that classical MDS runs efficiently, then \code{l}\eqn{\leq \bar{l}}.
+#'(using `cmdscale` function). It means that if \eqn{\bar{l}} is the limit 
+#'size for which classical MDS is applicable, then \code{l}\eqn{\leq \bar{l}}.
 #'@param c_points Number of points used to align the MDS solutions obtained by the 
 #'division of \code{x} into \eqn{p} submatrices. Recommended value: \code{2·r}.
 #'@param r Number of principal coordinates to be extracted.
@@ -103,9 +104,9 @@ main_divide_conquer_mds <- function(idx, x, x_sample_1, r, original_mds_sample_1
 #'
 #'@return Returns a list containing the following elements:
 #' \describe{
-#'   \item{points}{A matrix that consists of \eqn{n} individuals (rows) 
+#'   \item{points}{A matrix that consists of \eqn{n} points (rows) 
 #'   and \code{r} variables (columns) corresponding to the MDS coordinates. Since 
-#'   we are performing a dimensionality reduction, \code{r}\eqn{<<k}}
+#'   a dimensionality reduction is performed, \code{r}\eqn{<<k}}
 #'   \item{eigen}{The first \code{r} largest eigenvalues: 
 #'   \eqn{\bar{\lambda}_i, i \in  \{1, \dots, r\} }, where
 #'   \eqn{\bar{\lambda}_i = 1/p \sum_{j=1}^{p}\lambda_j/n_j}, 
@@ -123,16 +124,30 @@ main_divide_conquer_mds <- function(idx, x, x_sample_1, r, original_mds_sample_1
 #'
 #'@examples
 #'set.seed(42)
-#'x <- matrix(data = rnorm(4*10000), nrow = 10000) %*% diag(c(15, 10, 1, 1))
+#'x <- matrix(data = rnorm(4*10000), nrow = 10000) %*% diag(c(9, 4, 1, 1))
 #'mds <- divide_conquer_mds(x = x, l = 200, c_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
-#'cbind(mds$points[1:3, ], x[1:3, ]))
-#'var(x)
-#'var(mds$points)
+#'head(mds$points)
+#'mds$eigen
+#'mds$GOF
+#'points <- mds$points
+#'plot(x[1:10, 1],
+#'      x[1:10, 2],
+#'      xlim = range(c(x[1:10,1],points[1:10,1])),
+#'      ylim = range(c(x[1:10,2], points[1:10,2])),
+#'      pch = 19,
+#'      col = "green")
+#'text(x[1:10, 1], x[1:10, 2], labels=1:10)
+#'points(points[1:10, 1], points[1:10, 2], pch = 19, col = "orange")
+#'text(points[1:10, 1], points[1:10, 2], labels=1:10)
+#'abline(v = 0, lwd=3, lty=2)
+#'abline(h = 0, lwd=3, lty=2)
+#'
 #'@references
 #'Delicado P. and C. Pachon-Garcia (2021). *Multidimensional Scaling for Big Data*.
 #'\url{https://arxiv.org/abs/2007.11919}
-#' 
-#'Borg, I. and Groenen, P. (2005). *Modern Multidimensional Scaling: Theory and Applications*. Springer.
+#'
+#'Borg, I. and P. Groenen (2005). *Modern Multidimensional Scaling: Theory and Applications*. Springer.
+#'
 #'@export
 divide_conquer_mds <- function(x, l, c_points, r, n_cores = 1, dist_fn = stats::dist, ...) {
 
