@@ -57,7 +57,7 @@ test_that("Procrustes fails when number of rows does not match (x, target)", {
   y <- matrix(data = c(-1, -2, -3, -4), nrow = 2)
   expect_error(
     perform_procrustes(x = x, target = y, matrix_to_transform = x, translation = FALSE),
-    "\"x\" and \"target\" do not have same number of rows"
+    "\"x\" and \"target\" do not have the same number of rows"
   )
 })
 
@@ -66,7 +66,7 @@ test_that("Procrustes fails when number of columns does not match (x, target)", 
   y <- matrix(data = c(-1, -2, -3, -4), nrow = 2)
   expect_error(
     perform_procrustes(x = x, target = y, matrix_to_transform = x, translation = FALSE),
-    "\"x\" and \"target\" do not have same number of columns"
+    "\"x\" and \"target\" do not have the same number of columns"
   )
 })
 
@@ -76,7 +76,7 @@ test_that("Procrustes fails when number of columns does not match (x, matrix_to_
   y <- matrix(data = c(-1, -2, -3, -4, -5, -6), nrow = 3)
   expect_error(
     perform_procrustes(x = x, target = y, matrix_to_transform = x_t, translation = FALSE),
-    "\"x\" and \"matrix_to_transform\" do not have same number of columns"
+    "\"x\" and \"matrix_to_transform\" do not have the same number of columns"
   )
 })
 
