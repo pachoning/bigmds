@@ -115,7 +115,7 @@ main_fast_mds <- function(idx, matrix, l, s_points, r, n_cores, dist_fn, ...) {
 #'Yang, T., J. Liu, L. McMillan, and W.Wang (2006). *A fast approximation to multidimensional scaling*. 
 #'In Proceedings of the ECCV Workshop on Computation Intensive Methods for Computer Vision (CIMCV).
 #' 
-#' Borg, I. and P. Groenen (2005). *Modern Multidimensional Scaling: Theory and Applications*. Springer.
+#'Borg, I. and P. Groenen (2005). *Modern Multidimensional Scaling: Theory and Applications*. Springer.
 #'
 #'@export
 fast_mds <- function(x, l, s_points, r, n_cores = 1, dist_fn = stats::dist, ...) {
