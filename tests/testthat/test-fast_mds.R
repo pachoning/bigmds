@@ -14,7 +14,7 @@ test_that("Partitions for fast MDS returns an error when n < s_points", {
 test_that("Partitions for fast MDS returns an error when n*s_points/l < r", {
   expect_error(
     get_partitions_for_fast(n = 10, l = 100, s_points = 5, r = 100),
-    "Number of rows of \"x\" must be greater than \"r\"·\"l\"/\"s_points\""
+    "Number of rows of \"x\" must be greater than \"r\" x \"l\"/\"s_points\""
   )
 })
 
