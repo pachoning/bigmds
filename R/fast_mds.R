@@ -91,7 +91,7 @@ main_fast_mds <- function(idx, matrix, l, s_points, r, n_cores, dist_fn, ...) {
 #'@examples
 #'set.seed(42)
 #'x <- matrix(data = rnorm(4*10000), nrow = 10000) %*% diag(c(9, 4, 1, 1))
-#'mds <- divide_conquer_mds(x = x, l = 200, c_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
+#'mds <- fast_mds(x = x, l = 200, s_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
 #'head(mds$points)
 #'mds$eigen
 #'mds$GOF
