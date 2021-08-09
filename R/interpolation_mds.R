@@ -117,7 +117,7 @@ interpolation_mds_main <- function(idx, x, data_1, x_1, n_row_1, q_vector, x_1__
 #'@examples
 #'set.seed(42)
 #'x <- matrix(data = rnorm(4*10000), nrow = 10000) %*% diag(c(9, 4, 1, 1))
-#'mds <- interpolation_mds(x = x, l = 200, s_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
+#'mds <- interpolation_mds(x = x, l = 200, r = 2, n_cores = 1, dist_fn = stats::dist)
 #'head(mds$points)
 #'mds$eigen
 #'mds$GOF
@@ -199,7 +199,7 @@ interpolation_mds <- function(x, l, r, n_cores = 1, dist_fn = stats::dist,...) {
     idx_all <- order(idx_all)
     mds_points <- mds_points[idx_all, , drop = FALSE]
     mds_points <- apply(mds_points, MARGIN = 2, FUN = function(y) y - mean(y))
-    mds_points <- mds_points %*% eigen(cov(mds_points))$vectors
+    mds_points <- mds_points %*% eigen(stats::cov(mds_points))$vectors
     list_to_return <- list(points = mds_points, eigen = eigen_v, GOF = GOF)
   }
 

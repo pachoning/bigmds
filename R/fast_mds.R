@@ -3,7 +3,7 @@ get_partitions_for_fast <- function(n, l, s_points, r) {
   if (n < s_points) {
     stop("Number of rows of \"x\" must be greater than \"s_points\"")
   } else if (n*s_points/l < r) {
-    stop("Number of rows of \"x\" must be greater than \"r\"·\"l\"/\"s_points\"")
+    stop("Number of rows of \"x\" must be greater than \"r\" x \"l\"/\"s_points\"")
   }
 
   p <- floor(l/s_points)
@@ -208,7 +208,7 @@ fast_mds <- function(x, l, s_points, r, n_cores = 1, dist_fn = stats::dist, ...)
     mds <-do.call(rbind, procrustes)
     mds <- mds[idx_order, ,drop = FALSE]
     mds <- apply(mds, MARGIN = 2, FUN = function(y) y - mean(y))
-    mds <- mds %*% eigen(cov(mds))$vectors
+    mds <- mds %*% eigen(stats::cov(mds))$vectors
     eigen <- Reduce(`+`, mds_partition_eigen)/num_partition
 
     # Build GOF metric

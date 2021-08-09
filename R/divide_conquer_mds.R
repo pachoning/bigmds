@@ -197,7 +197,7 @@ divide_conquer_mds <- function(x, l, c_points, r, n_cores = 1, dist_fn = stats::
     order_idx <- order(order_idx)
     mds_matrix <- mds_matrix[order_idx, , drop = FALSE]
     mds_matrix <- apply(mds_matrix, MARGIN = 2, FUN = function(x) x - mean(x))
-    mds_matrix <- mds_matrix %*% eigen(cov(mds_matrix))$vectors
+    mds_matrix <- mds_matrix %*% eigen(stats::cov(mds_matrix))$vectors
 
     # Obtain eigenvalues
     eigen <- parallel::mclapply(mds_others_results, function(x) x$eigen, mc.cores = n_cores)
