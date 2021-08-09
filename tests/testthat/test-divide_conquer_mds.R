@@ -4,47 +4,47 @@ test_that("Partitions for divide-and-conquer MDS returns a valid partition datas
   expect_equal(p, 11)
 })
 
-test_that("Number of partition is 1 when n = l", {
+test_that("Number of partition for divide-and-conquer MDS is 1 when n = l", {
   partition <- get_partitions_for_divide_conquer(n = 100, l = 100, c_points = 5, r = 10)
   p <- length(partition)
   expect_equal(p, 1)
 })
 
-test_that("Number of partition is 1 when n < l", {
+test_that("Number of partition for divide-and-conquer MDS is 1 when n < l", {
   partition <- get_partitions_for_divide_conquer(n = 90, l = 100, c_points = 5, r = 10)
   p <- length(partition)
   expect_equal(p, 1)
 })
 
-test_that("Partition fails when \"l-c_points\" = 0", {
+test_that("Partition for divide-and-conquer MDS fails when \"l-c_points\" = 0", {
   expect_error(
     get_partitions_for_divide_conquer(n = 1000, l = 100, c_points = 100, r = 10),
     "\"l\" must be greater than \"c_points\""
     )
 })
 
-test_that("Partition fails when \"l-c_points\" < 0", {
+test_that("Partition for divide-and-conquer MDS fails when \"l-c_points\" < 0", {
   expect_error(
     get_partitions_for_divide_conquer(n = 1000, l = 90, c_points = 100, r = 10),
     "\"l\" must be greater than \"c_points\""
   )
 })
 
-test_that("Partition fails when \"l-c_points\" = \"c_points\"", {
+test_that("Partition for divide-and-conquer MDS fails when \"l-c_points\" = \"c_points\"", {
   expect_error(
     get_partitions_for_divide_conquer(n = 1000, l = 90, c_points = 45, r = 10),
     "\"l-c_points\" must be greater than \"c_points\""
   )
 })
 
-test_that("Partition fails when \"l-c_points\" = \"r\"", {
+test_that("Partition for divide-and-conquer MDS fails when \"l-c_points\" = \"r\"", {
   expect_error(
     get_partitions_for_divide_conquer(n = 1000, l = 100, c_points = 10, r = 90),
     "\"l-c_points\" must be greater than \"r\""
   )
 })
 
-test_that("Partition fails when \"l-c_points\" < \"r\"", {
+test_that("Partition for divide-and-conquer MDS fails when \"l-c_points\" < \"r\"", {
   expect_error(
     get_partitions_for_divide_conquer(n = 1000, l = 100, c_points = 11, r = 90),
     "\"l-c_points\" must be greater than \"r\""
