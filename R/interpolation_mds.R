@@ -4,8 +4,12 @@ get_partitions_for_interpolation <- function(n, n_obs, l, r) {
     stop("\"l\" must be greater than \"r\"")
   }
 
-  p <- 1 + ceiling((n - l)/n_obs)
-  n_last <- n - (l + (p-2)*n_obs)
+  if (n<=l) {
+    p <- 1
+  } else{
+    p <- 1 + ceiling((n - l)/n_obs)
+    n_last <- n - (l + (p-2)*n_obs)
+  }
 
   permutation <- sample(x = n, size = n, replace = FALSE)
 
@@ -188,7 +192,7 @@ interpolation_mds <- function(x, l, r, n_cores = 1, dist_fn = stats::dist,...) {
                                      mc.cores = n_cores,
                                      ...)
 
-    mds_points <- matrix(data = NA, nrow = n, ncol = k)
+    mds_points <- matrix(data = NA, nrow = n, ncol = r)
     mds_points[1:n_row_1, ] <- X_1
     mds_points[(n_row_1+1):n, ] <- do.call(rbind, mds_others)
     idx_all <- do.call(c, indexes_partition)
