@@ -1,9 +1,9 @@
 get_partitions_for_fast <- function(n, l, s_points, r) {
 
   if (n < s_points) {
-    stop("\"nrow(x)\" must be greater than \"s_points\"")
+    stop("Number of rows of \"x\" must be greater than \"s_points\"")
   } else if (n*s_points/l < r) {
-    stop("\"nrow(x)*s_points/l\" must be greater than \"r\"")
+    stop("Number of rows of \"x\" must be greater than \"r\"·\"l\"/\"s_points\"")
   }
 
   p <- floor(l/s_points)
