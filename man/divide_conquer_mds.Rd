@@ -14,7 +14,7 @@ divide_conquer_mds(x, l, c_points, r, n_cores = 1, dist_fn = stats::dist, ...)
 size for which classical MDS is applicable, then \code{l}\eqn{\leq \bar{l}}.}
 
 \item{c_points}{Number of points used to align the MDS solutions obtained by the
-division of \code{x} into \eqn{p} submatrices. Recommended value: \code{2·r}.}
+division of \code{x} into \eqn{p} data subsets. Recommended value: \code{2·r}.}
 
 \item{r}{Number of principal coordinates to be extracted.}
 
@@ -34,7 +34,7 @@ a dimensionality reduction is performed, \code{r}\eqn{<<k}}
 \eqn{\bar{\lambda}_i, i \in  \{1, \dots, r\} }, where
 \eqn{\bar{\lambda}_i = 1/p \sum_{j=1}^{p}\lambda_j/n_j},
 being \eqn{n_j} the size of the partition \eqn{j}.}
-\item{GOF}{a numeric vector of length 2.
+\item{GOF}{A numeric vector of length 2.
 
 The first element corresponds to
 \eqn{1/n \sum_{j=1}^{p}n_jG_1^j}, where
@@ -55,7 +55,7 @@ on the same coordinate system with the aim to obtain a global MDS configuration.
 The divide-and-conquer MDS starts dividing the \eqn{n} points into
 \eqn{p} partitions: the first partition contains \code{l} points and the others
 contain \code{l-c_points} points. Therefore, \eqn{p = 1 + (n-}\code{l)/(l-c_points)}.
-The partitions are created at random without replacement.
+The partitions are created at random.
 
 Once the partitions are created, \code{c_points} different random
 points are taken from the first partition and concatenated to the other
@@ -90,7 +90,7 @@ abline(h = 0, lwd=3, lty=2)
 }
 \references{
 Delicado P. and C. Pachon-Garcia (2021). \emph{Multidimensional Scaling for Big Data}.
-\url{https://arxiv.org/abs/2007.11919}
+\url{https://arxiv.org/abs/2007.11919}.
 
 Borg, I. and P. Groenen (2005). \emph{Modern Multidimensional Scaling: Theory and Applications}. Springer.
 }

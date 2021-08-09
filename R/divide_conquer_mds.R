@@ -79,7 +79,7 @@ main_divide_conquer_mds <- function(idx, x, x_sample_1, r, original_mds_sample_1
 #'@details The divide-and-conquer MDS starts dividing the \eqn{n} points into 
 #'\eqn{p} partitions: the first partition contains \code{l} points and the others
 #'contain \code{l-c_points} points. Therefore, \eqn{p = 1 + (n-}\code{l)/(l-c_points)}.
-#'The partitions are created at random without replacement. 
+#'The partitions are created at random. 
 #'
 #'Once the partitions are created, \code{c_points} different random 
 #'points are taken from the first partition and concatenated to the other 
@@ -96,7 +96,7 @@ main_divide_conquer_mds <- function(idx, x, x_sample_1, r, original_mds_sample_1
 #'(using `cmdscale` function). It means that if \eqn{\bar{l}} is the limit 
 #'size for which classical MDS is applicable, then \code{l}\eqn{\leq \bar{l}}.
 #'@param c_points Number of points used to align the MDS solutions obtained by the 
-#'division of \code{x} into \eqn{p} submatrices. Recommended value: \code{2·r}.
+#'division of \code{x} into \eqn{p} data subsets. Recommended value: \code{2·r}.
 #'@param r Number of principal coordinates to be extracted.
 #'@param n_cores Number of cores wanted to use to run the algorithm.
 #'@param dist_fn Distance function used to compute the distance between the rows.
@@ -111,7 +111,7 @@ main_divide_conquer_mds <- function(idx, x, x_sample_1, r, original_mds_sample_1
 #'   \eqn{\bar{\lambda}_i, i \in  \{1, \dots, r\} }, where
 #'   \eqn{\bar{\lambda}_i = 1/p \sum_{j=1}^{p}\lambda_j/n_j}, 
 #'   being \eqn{n_j} the size of the partition \eqn{j}.}
-#'   \item{GOF}{a numeric vector of length 2. 
+#'   \item{GOF}{A numeric vector of length 2. 
 #'   
 #'   The first element corresponds to
 #'   \eqn{1/n \sum_{j=1}^{p}n_jG_1^j}, where 
@@ -144,7 +144,7 @@ main_divide_conquer_mds <- function(idx, x, x_sample_1, r, original_mds_sample_1
 #'
 #'@references
 #'Delicado P. and C. Pachon-Garcia (2021). *Multidimensional Scaling for Big Data*.
-#'\url{https://arxiv.org/abs/2007.11919}
+#'\url{https://arxiv.org/abs/2007.11919}.
 #'
 #'Borg, I. and P. Groenen (2005). *Modern Multidimensional Scaling: Theory and Applications*. Springer.
 #'
