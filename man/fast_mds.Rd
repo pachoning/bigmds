@@ -56,7 +56,7 @@ into \eqn{p=n/l} data subsets, where \code{l} \eqn{\leq \bar{l}} being \eqn{\bar
 the limit size for which classical MDS is applicable. Each one of the \eqn{p} data subsets
 has size \eqn{\tilde{n} = n/p}. If \eqn{\tilde{n} \leq l} then classical MDS is applied
 to each data subset. Otherwise, fast MDS is recursively applied.
-In either case, a final MDS configuration is obtained for each data subset
+In either case, a final MDS configuration is obtained for each data subset.
 
 In order to align all the partial solutions, a small subset of size \code{s_points}
 is randomly selected from each data subset (the role of \code{s_points} in fast MDS
@@ -68,11 +68,23 @@ using a Procrustes transformation.
 }
 \examples{
 set.seed(42)
-x <- matrix(data = rnorm(4*10000), nrow = 10000) \%*\% diag(c(15, 10, 1, 1))
+x <- matrix(data = rnorm(4*10000), nrow = 10000) \%*\% diag(c(9, 4, 1, 1))
 mds <- fast_mds(x = x, l = 200, s_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
 head(mds$points)
 mds$eigen
 mds$GOF
+points <- mds$points
+plot(x[1:10, 1],
+     x[1:10, 2],
+     xlim = range(c(x[1:10,1],points[1:10,1])),
+     ylim = range(c(x[1:10,2], points[1:10,2])),
+     pch = 19,
+     col = "green")
+text(x[1:10, 1], x[1:10, 2], labels=1:10)
+points(points[1:10, 1], points[1:10, 2], pch = 19, col = "orange")
+text(points[1:10, 1], points[1:10, 2], labels=1:10)
+abline(v = 0, lwd=3, lty=2)
+abline(h = 0, lwd=3, lty=2)
 
 }
 \references{
