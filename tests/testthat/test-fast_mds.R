@@ -1,14 +1,73 @@
-test_that("Partitions for Fast returns a valid partition dataset", {
-  partition <- get_partitions_for_fast(n = 1000, l = 100, s = 5, k = 10)
+test_that("Partitions for fast MDS returns a valid partition dataset", {
+  partition <- get_partitions_for_fast(n = 1000, l = 100, s_points = 5, r = 10)
   p <- length(partition)
   expect_equal(p, 20)
 })
 
-test_that("Fast MDS returns a valid MDS configuration", {
-  x <- matrix(data = rnorm(4*1000, sd = 10), nrow = 1000)
-  cmds <- fast_mds(x = x, l = 100, s = 8, k = 4, dist_fn = stats::dist)
-  cmds_proc <- perform_procrustes(x = cmds$points, target = x, matrix_to_transform = cmds$points, 
-                                  translation = FALSE, dilation = FALSE)
-  corr_first <- cor(x[, 1], cmds_proc[, 1])
-  expect_gt(corr_first, 0.7)
+test_that("Partitions for fast MDS returns an error when n < s_points", {
+  expect_error(
+    get_partitions_for_fast(n = 10, l = 10, s_points = 15, r = 100),
+    "Number of rows of \"x\" must be greater than \"s_points\""
+  )
+})
+
+test_that("Partitions for fast MDS returns an error when n*s_points/l < r", {
+  expect_error(
+    get_partitions_for_fast(n = 10, l = 100, s_points = 5, r = 100),
+    "Number of rows of \"x\" must be greater than \"r\"·\"l\"/\"s_points\""
+  )
+})
+
+test_that("fast MDS returns a valid MDS configuration when n > l", {
+  n <- 1000
+  n_cols <- 10
+  l <- 100
+  r <- 4
+  s_points <- 2*r
+  diag_mat <- sqrt(diag(c(rep(15, r), rep(1, n_cols - r))))
+  x <- matrix(data = rnorm(n_cols*n), nrow = n) %*% diag_mat
+  cmds <- fast_mds(x = x, l = l, s_points = s_points, r = r)
+  cmds_proc <- perform_procrustes(x = cmds$points,
+                                  target = x[, 1:r],
+                                  matrix_to_transform = cmds$points, 
+                                  translation = FALSE)
+  corr_vector <- sapply(1:r, function(i, x, y) cor(x[, i], y[, i]), x = x, y = cmds_proc)
+  min_corr <- min(abs(corr_vector))
+  expect_gt(min_corr, 0.9)
+})
+
+test_that("fast MDS returns a valid MDS configuration when n = l", {
+  n <- 100
+  n_cols <- 10
+  l <- 100
+  r <- 4
+  s_points <- 2*r
+  diag_mat <- sqrt(diag(c(rep(15, r), rep(1, n_cols - r))))
+  x <- matrix(data = rnorm(n_cols*n), nrow = n) %*% diag_mat
+  cmds <- fast_mds(x = x, l = l, s_points = s_points, r = r)
+  cmds_proc <- perform_procrustes(x = cmds$points,
+                                  target = x[, 1:r],
+                                  matrix_to_transform = cmds$points, 
+                                  translation = FALSE)
+  corr_vector <- sapply(1:r, function(i, x, y) cor(x[, i], y[, i]), x = x, y = cmds_proc)
+  min_corr <- min(abs(corr_vector))
+  expect_gt(min_corr, 0.9)
+})
+
+test_that("fast MDS returns a valid MDS configuration when n < l", {
+  n <- 90
+  n_cols <- 10
+  l <- 100
+  r <- 4
+  s_points <- 2*r
+  diag_mat <- sqrt(diag(c(rep(15, r), rep(1, n_cols - r))))
+  x <- matrix(data = rnorm(n_cols*n), nrow = n) %*% diag_mat
+  cmds <- fast_mds(x = x, l = l, s_points = s_points, r = r)
+  cmds_proc <- perform_procrustes(x = cmds$points,
+                                  target = x[, 1:r],
+                                  matrix_to_transform = cmds$points, 
+                                  translation = FALSE)
+  corr_vector <- sapply(1:r, function(i, x, y) cor(x[, i], y[, i]), x = x, y = cmds_proc)
+  min_corr <- min(abs(corr_vector))
+  expect_gt(min_corr, 0.9)
 })
