@@ -59,7 +59,7 @@ The partitions are created at random without replacement.
 
 Once the partitions are created, \code{c_points} different random
 points are taken from the first partition and concatenated to the other
-ones. After that, classical MDS is applied to each partition,
+partitions After that, classical MDS is applied to each partition,
 with target low dimensional configuration \code{r}.
 
 Since all the partitions share \code{c_points}
