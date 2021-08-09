@@ -1,4 +1,4 @@
-test_that("Partitions for Divide and Conquer returns a valid partition dataset", {
+test_that("Partitions for divide-and-conquer MDS returns a valid partition dataset", {
   partition <- get_partitions_for_divide_conquer(n = 1000, l = 100, c_points = 5, r = 10)
   p <- length(partition)
   expect_equal(p, 11)
@@ -51,7 +51,7 @@ test_that("Partition fails when \"l-c_points\" < \"r\"", {
   )
 })
 
-test_that("Divide and Conquer MDS returns a valid MDS configuration when \"n\" > \"l\"", {
+test_that("divide-and-conquer MDS returns a valid MDS configuration when \"n\" > \"l\"", {
   n <- 1000
   n_cols <- 10
   l <- 100
@@ -69,7 +69,7 @@ test_that("Divide and Conquer MDS returns a valid MDS configuration when \"n\" >
   expect_gt(min_corr, 0.9)
 })
 
-test_that("Divide and Conquer MDS returns a valid MDS configuration when \"n\" = \"l\"", {
+test_that("divide-and-conquer MDS returns a valid MDS configuration when \"n\" = \"l\"", {
   n <- 100
   n_cols <- 10
   l <- 100
@@ -87,7 +87,7 @@ test_that("Divide and Conquer MDS returns a valid MDS configuration when \"n\" =
   expect_gt(min_corr, 0.9)
 })
 
-test_that("Divide and Conquer MDS returns a valid MDS configuration when \"n\" < \"l\"", {
+test_that("divide-and-conquer MDS returns a valid MDS configuration when \"n\" < \"l\"", {
   n <- 90
   n_cols <- 10
   l <- 100
