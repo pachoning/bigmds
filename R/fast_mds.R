@@ -77,7 +77,7 @@ main_fast_mds <- function(idx, matrix, l, s_points, r, n_cores, dist_fn, ...) {
 #'   \eqn{\bar{\lambda}_i, i \in  \{1, \dots, r\} }, where
 #'   \eqn{\bar{\lambda}_i = 1/p \sum_{j=1}^{p}\lambda_j/n_j}, 
 #'   being \eqn{n_j} the size of the partition \eqn{j}.}
-#'   \item{GOF}{a numeric vector of length 2. 
+#'   \item{GOF}{A numeric vector of length 2. 
 #'   
 #'   The first element corresponds to
 #'   \eqn{1/n \sum_{j=1}^{p}n_jG_1^j}, where 
@@ -110,7 +110,7 @@ main_fast_mds <- function(idx, matrix, l, s_points, r, n_cores, dist_fn, ...) {
 #'
 #'@references
 #'Delicado P. and C. Pachon-Garcia (2021). *Multidimensional Scaling for Big Data*.
-#'\url{https://arxiv.org/abs/2007.11919}
+#'\url{https://arxiv.org/abs/2007.11919}.
 #'
 #'Yang, T., J. Liu, L. McMillan, and W.Wang (2006). *A fast approximation to multidimensional scaling*. 
 #'In Proceedings of the ECCV Workshop on Computation Intensive Methods for Computer Vision (CIMCV).
