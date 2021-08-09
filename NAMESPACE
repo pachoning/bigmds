@@ -2,4 +2,4 @@
 
 export(divide_conquer_mds)
 export(fast_mds)
-export(gower_interpolation_mds)
+export(interpolation_mds)
