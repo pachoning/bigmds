@@ -16,42 +16,42 @@ test_that("Number of partition for divide-and-conquer MDS is 1 when n < l", {
   expect_equal(p, 1)
 })
 
-test_that("Partition for divide-and-conquer MDS fails when \"l-c_points\" = 0", {
+test_that("Partition for divide-and-conquer MDS fails when l-c_points = 0", {
   expect_error(
     get_partitions_for_divide_conquer(n = 1000, l = 100, c_points = 100, r = 10),
     "\"l\" must be greater than \"c_points\""
     )
 })
 
-test_that("Partition for divide-and-conquer MDS fails when \"l-c_points\" < 0", {
+test_that("Partition for divide-and-conquer MDS fails when l-c_points < 0", {
   expect_error(
     get_partitions_for_divide_conquer(n = 1000, l = 90, c_points = 100, r = 10),
     "\"l\" must be greater than \"c_points\""
   )
 })
 
-test_that("Partition for divide-and-conquer MDS fails when \"l-c_points\" = \"c_points\"", {
+test_that("Partition for divide-and-conquer MDS fails when l-c_points = c_points", {
   expect_error(
     get_partitions_for_divide_conquer(n = 1000, l = 90, c_points = 45, r = 10),
     "\"l-c_points\" must be greater than \"c_points\""
   )
 })
 
-test_that("Partition for divide-and-conquer MDS fails when \"l-c_points\" = \"r\"", {
+test_that("Partition for divide-and-conquer MDS fails when l-c_points = r", {
   expect_error(
     get_partitions_for_divide_conquer(n = 1000, l = 100, c_points = 10, r = 90),
     "\"l-c_points\" must be greater than \"r\""
   )
 })
 
-test_that("Partition for divide-and-conquer MDS fails when \"l-c_points\" < \"r\"", {
+test_that("Partition for divide-and-conquer MDS fails when l-c_points < r", {
   expect_error(
     get_partitions_for_divide_conquer(n = 1000, l = 100, c_points = 11, r = 90),
     "\"l-c_points\" must be greater than \"r\""
   )
 })
 
-test_that("divide-and-conquer MDS returns a valid MDS configuration when \"n\" > \"l\"", {
+test_that("divide-and-conquer MDS returns a valid MDS configuration when n > l", {
   n <- 1000
   n_cols <- 10
   l <- 100
@@ -69,7 +69,7 @@ test_that("divide-and-conquer MDS returns a valid MDS configuration when \"n\" >
   expect_gt(min_corr, 0.9)
 })
 
-test_that("divide-and-conquer MDS returns a valid MDS configuration when \"n\" = \"l\"", {
+test_that("divide-and-conquer MDS returns a valid MDS configuration when n = l", {
   n <- 100
   n_cols <- 10
   l <- 100
@@ -87,7 +87,7 @@ test_that("divide-and-conquer MDS returns a valid MDS configuration when \"n\" =
   expect_gt(min_corr, 0.9)
 })
 
-test_that("divide-and-conquer MDS returns a valid MDS configuration when \"n\" < \"l\"", {
+test_that("divide-and-conquer MDS returns a valid MDS configuration when n < l", {
   n <- 90
   n_cols <- 10
   l <- 100
