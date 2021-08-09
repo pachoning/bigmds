@@ -67,7 +67,7 @@ configuration for \code{x} is obtained.
 \examples{
 set.seed(42)
 x <- matrix(data = rnorm(4*10000), nrow = 10000) \%*\% diag(c(9, 4, 1, 1))
-mds <- interpolation_mds(x = x, l = 200, s_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
+mds <- interpolation_mds(x = x, l = 200, r = 2, n_cores = 1, dist_fn = stats::dist)
 head(mds$points)
 mds$eigen
 mds$GOF
