@@ -23,13 +23,13 @@ When *n* is large, classical algorithms suffer from computational problems and *
 
 With this package, we address these problems by means of three algorithms: 
 
-- Divide and Conquer MDS
-- Fast MDS
-- MDS based on Gower interpolation
+- Divide-and-conquer MDS.
+- Fast MDS.
+- Interpolation MDS.
 
 The main idea of these methods is based on partitioning the dataset into small pieces, where classical methods can work.
-*Fast MDS* was developed by *Tynia, Y., L. Jinze, M. Leonard, and W. Wei, (2006)*, whereas 
-*Divide and Conquer MDS* and *MDS based on Gower interpolation* were developed by *Delicado and Pachon-Garcia, 2020.*
+*Fast MDS* was developed by *Yang, T., J. Liu, L. McMillan, and W. Wang (2006)*, whereas 
+*Divide and Conquer MDS* and *MDS based on Gower interpolation* were developed by *Delicado P. and C. Pachon-Garcia (2021).*
 
 To obtain more information, please read this [paper](https://arxiv.org/abs/2007.11919).
 
@@ -52,26 +52,27 @@ devtools::install_github("pachoning/bigmds")
 This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
+set.seed(42)
 library(bigmds)
-x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
+x <- matrix(data = rnorm(4*10000), nrow = 10000) %*% diag(c(9, 4, 1, 1))
 
-divide_mds <- divide_conquer_mds(x = x, l = 200, tie = 2*2, k = 2, dist_fn = stats::dist)
-head(cbind(divide_mds$points, x[, 1:2]))
-var(x)
-var(divide_mds$points)
+divide_mds_conf <- divide_conquer_mds(x = x, l = 200, c_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
+head(divide_mds_conf$points)
+divide_mds_conf$eigen
+divide_mds_conf$GOF
 
-fast_mds <- fast_mds(x = x, l = 200, s = 2*2, k = 2, dist_fn = stats::dist)
-head(cbind(fast_mds$points, x[, 1:2]))
-var(x)
-var(fast_mds$points)
+fast_mds_conf <- fast_mds(x = x, l = 200, s_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
+head(fast_mds_conf$points)
+fast_mds_conf$eigen
+fast_mds_conf$GOF
 
-gower_mds <- gower_interpolation_mds(x = x, l = 200, k = 2, dist_fn = stats::dist)
-head(cbind(gower_mds$points, x[, 1:2]))
-var(x)
-var(gower_mds$points)
+interpolation_mds_conf <- interpolation_mds(x = x, l = 200, r = 2, n_cores = 1, dist_fn = stats::dist)
+head(interpolation_mds_conf$points)
+interpolation_mds_conf$eigen
+interpolation_mds_conf$GOF
 ```
 
-With the implementation of *classical MDS*, it is not possible to obtain a MDS configuration due to computational 
+With the implementation of *classical MDS*, it takes much more time to obtain a MDS configuration due to computational 
 problems. Try it yourself!
 
 ```{r, example2, eval=FALSE}

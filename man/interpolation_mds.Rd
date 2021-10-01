@@ -58,7 +58,7 @@ and \eqn{k} variables (columns), a first data subsets (based on a random sample)
 of size \code{l} is taken and it is used to compute a MDS configuration.
 
 The remaining part of \code{x} is divided into \eqn{p=({n}-}\code{l})\code{/l}
-data subsets (randmoly). For every data subsets, it is obtained a MDS
+data subsets (randomly). For every data subsets, it is obtained a MDS
 configuration by means of \emph{Gower's interpolation formula} and the first
 MDS configuration obtained previously. Every MDS configuration is appended
 to the existing one so that, at the end of the process, a global MDS

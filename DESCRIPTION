@@ -15,8 +15,8 @@ Authors@R:
 Description: MDS is a statistic tool for reduction of dimensionality, using as input a distance matrix of dimensions n × n. 
   When n is large, classical algorithms suffer from computational problems and MDS configuration can not be obtained.
   With this package, we address these problems by means of three algorithms: 
-  - divide-and-conquer MDS developed by Delicado and Pachon-Garcia, (2021) <arXiv:2007.11919>.
-  - fast MDS, which is an implementation of Yang, T., J. Liu, L. McMillan, and W.Wang (2006).
+  - divide-and-conquer MDS developed by Delicado P. and C. Pachon-Garcia (2021) <arXiv:2007.11919>.
+  - fast MDS, which is an implementation of Yang, T., J. Liu, L. McMillan, and W. Wang (2006).
   - interpolation MDS, which uses Gower's interpolation formula as described in Gower, J. C. and D. J. Hand (1995, ISBN: 978-0-412-71630-0).
   The main idea of these algorithms is based on partitioning the data set into small pieces, where classical methods can work. In order to align all the solutions, it is used Procrustes formula as described in Borg, I. and P. Groenen (2005, ISBN : 978-0-387-25150-9).
 License: MIT + file LICENSE
