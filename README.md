@@ -21,9 +21,9 @@ algorithms:
 
 The main idea of these methods is based on partitioning the dataset into
 small pieces, where classical methods can work. *Fast MDS* was developed
-by *Yang, T., J. Liu, L. McMillan, and W. Wang (2006)*, whereas *Divide
-and Conquer MDS* and *MDS based on Gower interpolation* were developed
-by *Delicado P. and C. Pachon-Garcia (2021).*
+by *Yang, T., J. Liu, L. McMillan, and W. Wang (2006)*, whereas
+*divide-and-conquer MDS* and *interpolation MDS* were developed by
+*Delicado P. and C. Pachon-Garcia (2021).*
 
 To obtain more information, please read this
 [paper](https://arxiv.org/abs/2007.11919).
