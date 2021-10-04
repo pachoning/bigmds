@@ -43,15 +43,14 @@ main_fast_mds <- function(idx, matrix, l, s_points, r, n_cores, dist_fn, ...) {
 #'large data set \code{x}.
 #'
 #'@details Fast MDS randomly divides the whole sample data set, \code{x}, of size \eqn{n}
-#'into \eqn{p=n/l} data subsets, where \code{l} \eqn{\leq \bar{l}} being \eqn{\bar{l}}
+#'into \eqn{p=}\code{l/s_points} data subsets, where \code{l} \eqn{\leq \bar{l}} being \eqn{\bar{l}}
 #'the limit size for which classical MDS is applicable. Each one of the \eqn{p} data subsets
-#'has size \eqn{\tilde{n} = n/p}. If \eqn{\tilde{n} \leq l} then classical MDS is applied 
+#'has size \eqn{\tilde{n} = n/p}. If \eqn{\tilde{n} \leq \code{l}} then classical MDS is applied 
 #'to each data subset. Otherwise, fast MDS is recursively applied.
 #'In either case, a final MDS configuration is obtained for each data subset.
 #'
 #'In order to align all the partial solutions, a small subset of size \code{s_points}
-#'is randomly selected from each data subset (the role of \code{s_points} in fast MDS 
-#'is equivalent to that of \code{c_points} in divide-and-conquer MDS). They are joined
+#'is randomly selected from each data subset. They are joined
 #'to form an alignment set, over which classical MDS is performed giving rise to an
 #'alignment configuration. Every data subset shares \code{s_points} points with the alignment 
 #'set. Therefore every MDS configuration can be aligned with the alignment configuration 
@@ -71,12 +70,13 @@ main_fast_mds <- function(idx, matrix, l, s_points, r, n_cores, dist_fn, ...) {
 #'@return Returns a list containing the following elements:
 #' \describe{
 #'   \item{points}{A matrix that consists of \eqn{n} individuals (rows) 
-#'   and \code{r} variables (columns) corresponding to the MDS coordinates. Since 
+#'   and \code{r} variables (columns) corresponding to the principal coordinates. Since 
 #'   we are performing a dimensionality reduction, \code{r}\eqn{<<k}}
 #'   \item{eigen}{The first \code{r} largest eigenvalues: 
 #'   \eqn{\bar{\lambda}_i, i \in  \{1, \dots, r\} }, where
-#'   \eqn{\bar{\lambda}_i = 1/p \sum_{j=1}^{p}\lambda_j/n_j}, 
-#'   being \eqn{n_j} the size of the partition \eqn{j}.}
+#'   \eqn{\bar{\lambda}_i = 1/p \sum_{j=1}^{p}\lambda_i^j/n_j},
+#'   being \eqn{\lambda_i^j} the \eqn{i-th} eigenvalue from partition \eqn{j}
+#'   and \eqn{n_j} the size of the partition \eqn{j}.}
 #'   \item{GOF}{A numeric vector of length 2. 
 #'   
 #'   The first element corresponds to
