@@ -25,18 +25,18 @@ size for which classical MDS is applicable, then \code{l}\eqn{\leq \bar{l}}.}
 Returns a list containing the following elements:
 \describe{
 \item{points}{A matrix that consists of \eqn{n} individuals (rows)
-and \code{r} variables (columns) corresponding to the MDS coordinates. Since
+and \code{r} variables (columns) corresponding to the principal coordinates. Since
 we are performing a dimensionality reduction, \code{r}\eqn{<<k}}
 \item{eigen}{The first \code{r} largest eigenvalues:
 \eqn{\lambda_i, i \in  \{1, \dots, r\} }, where each \eqn{\lambda_i} is obtained
-from the applying classical MDS to the first data subset.}
+from applying classical MDS to the first data subset.}
 \item{GOF}{A numeric vector of length 2.
 
 The first element corresponds to
-\eqn{G_1 = \sum_{i = 1}^{r} \lambda_{i}/ \sum_{i = 1}^{n-1} |\lambda_{i}|}.
+\eqn{\sum_{i = 1}^{r} \lambda_{i}/ \sum_{i = 1}^{n-1} |\lambda_{i}|}.
 
 The second element corresponds to
-\eqn{G_2^j = \sum_{i = 1}^{r} \lambda_{i}/ \sum_{i = 1}^{n-1} max(\lambda_{i}, 0).}}
+\eqn{\sum_{i = 1}^{r} \lambda_{i}/ \sum_{i = 1}^{n-1} max(\lambda_{i}, 0).}}
 }
 }
 \description{
@@ -58,7 +58,7 @@ and \eqn{k} variables (columns), a first data subsets (based on a random sample)
 of size \code{l} is taken and it is used to compute a MDS configuration.
 
 The remaining part of \code{x} is divided into \eqn{p=({n}-}\code{l})\code{/l}
-data subsets (randomly). For every data subsets, it is obtained a MDS
+data subsets (randomly). For every data subset, it is obtained a MDS
 configuration by means of \emph{Gower's interpolation formula} and the first
 MDS configuration obtained previously. Every MDS configuration is appended
 to the existing one so that, at the end of the process, a global MDS
