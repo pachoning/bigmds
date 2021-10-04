@@ -90,7 +90,7 @@ abline(h = 0, lwd=3, lty=2)
 
 }
 \references{
-Delicado P. and C. Pachon-Garcia (2021). \emph{Multidimensional Scaling for Big Data}.
+Delicado P. and C. Pachón-García (2021). \emph{Multidimensional Scaling for Big Data}.
 \url{https://arxiv.org/abs/2007.11919}.
 
 Borg, I. and P. Groenen (2005). \emph{Modern Multidimensional Scaling: Theory and Applications}. Springer.
