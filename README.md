@@ -20,9 +20,9 @@ algorithms:
   - Interpolation MDS.
 
 The main idea of these methods is based on partitioning the dataset into
-small pieces, where classical methods can work. *Fast MDS* was developed
+small pieces, where classical methods can work. *Fast MDS* was designed
 by *Yang, T., J. Liu, L. McMillan, and W. Wang (2006)*, whereas
-*divide-and-conquer MDS* and *interpolation MDS* were developed by
+*divide-and-conquer MDS* and *interpolation MDS* were designed by
 *Delicado P. and C. Pachón-García (2021).*
 
 To obtain more information, please read this
