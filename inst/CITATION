@@ -1,7 +1,7 @@
 bibentry(
   "Article",
   title = "Multidimensional Scaling for Big Data",
-  author = "Pedro Delicado and Cristian Pachon-Garcia",
+  author = "Pedro Delicado and Cristian Pachón-García",
   year = 2021,
   journal = "arXiv eprint:2007.11919"
 )
