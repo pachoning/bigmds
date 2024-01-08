@@ -1,3 +1,7 @@
+# bigmds 3.0.0
+
+* Add three new methods: landmark MDS, reduced MDS and pivot MDS.
+
 # bigmds 2.0.1
 
 * Make package documentation match with the paper in arXiv.

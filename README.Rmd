@@ -18,65 +18,58 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-*MDS* is a statistic tool for reduction of dimensionality, using as input a distance matrix of dimensions *n × n*. 
-When *n* is large, classical algorithms suffer from computational problems and *MDS* configuration can not be obtained.
+*MDS* is a statistic tool for reduction of dimensionality, using as input a distance matrix of dimensions 
+*n × n*. When *n* is large, classical algorithms suffer from computational problems and MDS configuration 
+can not be obtained. With this package, we address these problems by means of six algorithms, 
+being two of them original proposals:
 
-With this package, we address these problems by means of three algorithms: 
-
-- Divide-and-conquer MDS.
-- Fast MDS.
-- Interpolation MDS.
-
-The main idea of these methods is based on partitioning the dataset into small pieces, where classical methods can work.
-*Fast MDS* was designed by *Yang, T., J. Liu, L. McMillan, and W. Wang (2006)*, whereas 
-*divide-and-conquer MDS* and *interpolation MDS* were designed by *Delicado P. and C. Pachón-García (2021).*
+- Landmark MDS proposed by De Silva V. and JB. Tenenbaum (2004).
+- Interpolation MDS proposed by Delicado P. and C. Pachón-García (2021) <arXiv:2007.11919> (original proposal).
+- Reduced MDS proposel by Paradis E (2018).
+- Pivot MDS prposed by Brandes U. and C. Pich (2007)
+- Divide-and-conquer MDS proposed by Delicado P. and C. Pachón-García (2021) <arXiv:2007.11919> (original proposal).
+- Fast MDS, proposed by Yang, T., J. Liu, L. McMillan and W. Wang (2006).
 
 To obtain more information, please read this [paper](https://arxiv.org/abs/2007.11919).
 
 ## Installation
 
-You can install directly from CRAN with:
-
-``` r
-# install.packages("bigmds")
-```
-
-You can install the development version from [GitHub](https://github.com/) with:
+You can install the development version of bigmds from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("pachoning/bigmds")
 ```
+
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
-set.seed(42)
 library(bigmds)
-x <- matrix(data = rnorm(4*10000), nrow = 10000) %*% diag(c(9, 4, 1, 1))
+x <- matrix(data = rnorm(4 * 10000), nrow = 10000) %*% diag(c(9, 4, 1, 1))
 
-divide_mds_conf <- divide_conquer_mds(x = x, l = 200, c_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
-head(divide_mds_conf$points)
-divide_mds_conf$eigen
-divide_mds_conf$GOF
+landmark_mds_conf <- landmark_mds(x = x, num_landmarks = 200, r = 2)
+head(landmark_mds_conf$points)
+landmark_mds_conf$eigen
 
-fast_mds_conf <- fast_mds(x = x, l = 200, s_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
-head(fast_mds_conf$points)
-fast_mds_conf$eigen
-fast_mds_conf$GOF
-
-interpolation_mds_conf <- interpolation_mds(x = x, l = 200, r = 2, n_cores = 1, dist_fn = stats::dist)
+interpolation_mds_conf <- interpolation_mds(x = x, l = 200, r = 2, n_cores = 1)
 head(interpolation_mds_conf$points)
 interpolation_mds_conf$eigen
-interpolation_mds_conf$GOF
-```
 
-With the implementation of *classical MDS*, it takes much more time to obtain a MDS configuration due to computational 
-problems. Try it yourself!
+reduced_mds_conf <- reduced_mds(x = x, l = 200, r = 2, n_cores = 1)
+head(reduced_mds_conf$points)
+reduced_mds_conf$eigen
 
-```{r, example2, eval=FALSE}
-x <- matrix(data = rnorm(4*10000, sd = 10), nrow = 10000)
-dist_matrix <- stats::dist(x = x)
-mds_result <- stats::cmdscale(d = dist_matrix, k = 2, eig = TRUE)
+pivot_mds_conf <- pivot_mds(x = x, num_pivots = 200, r = 2)
+head(pivot_mds_conf$points)
+pivot_mds_conf$eigen
+
+divide_mds_conf <- divide_conquer_mds(x = x, l = 200, c_points = 5 * 2, r = 2, n_cores = 1)
+head(divide_mds_conf$points)
+divide_mds_conf$eigen
+
+fast_mds_conf <- fast_mds(x = x, l = 200, s_points = 2*2, r = 2, n_cores = 1)
+head(fast_mds_conf$points)
+fast_mds_conf$eigen
 ```
