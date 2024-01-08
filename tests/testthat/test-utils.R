@@ -57,7 +57,7 @@ test_that("Procrustes fails when number of rows does not match (x, target)", {
   y <- matrix(data = c(-1, -2, -3, -4), nrow = 2)
   expect_error(
     perform_procrustes(x = x, target = y, matrix_to_transform = x, translation = FALSE),
-    "\"x\" and \"target\" do not have the same number of rows"
+    "x and target do not have the same number of rows"
   )
 })
 
@@ -66,7 +66,7 @@ test_that("Procrustes fails when number of columns does not match (x, target)", 
   y <- matrix(data = c(-1, -2, -3, -4), nrow = 2)
   expect_error(
     perform_procrustes(x = x, target = y, matrix_to_transform = x, translation = FALSE),
-    "\"x\" and \"target\" do not have the same number of columns"
+    "x and target do not have the same number of columns"
   )
 })
 
@@ -76,31 +76,21 @@ test_that("Procrustes fails when number of columns does not match (x, matrix_to_
   y <- matrix(data = c(-1, -2, -3, -4, -5, -6), nrow = 3)
   expect_error(
     perform_procrustes(x = x, target = y, matrix_to_transform = x_t, translation = FALSE),
-    "\"x\" and \"matrix_to_transform\" do not have the same number of columns"
+    "x and matrix_to_transform do not have the same number of columns"
   )
 })
 
 test_that("Classical MDS returns a valid MDS configuration", {
   x <- matrix(data = rnorm(4*100, sd = 10), nrow = 100)
-  cmds <- classical_mds(x = x, k = 4, dist_fn = dist)
+  cmds <- classical_mds(x = x, r = 4)
   cmds_proc <- perform_procrustes(x = cmds$points, target = x, matrix_to_transform = cmds$points, 
                                   translation = FALSE)
   corr_first <- cor(x[, 1], cmds_proc[, 1])
   expect_gt(corr_first, 0.9)
 })
 
-test_that("Classical MDS fails when distance is not provided", {
-  x <- matrix(data = rnorm(4*100, sd = 10), nrow = 100)
-  expect_error(classical_mds(x = x, k = 4), "argument \"dist_fn\" is missing, with no default")
-})
-
-test_that("Classical MDS fails when dist_fn is not a function", {
-  x <- matrix(data = rnorm(4*100, sd = 10), nrow = 100)
-  expect_error(classical_mds(x = x, k = 4, dist_fn = 3), "\"dist_fn\" must be a function")
-})
-
 test_that("Classical MDS fails when there are NA values", {
   x <- matrix(data = rnorm(4*100, sd = 10), nrow = 100)
   x[1,1] <- NA
-  expect_error(classical_mds(x = x, k = 4, dist_fn = dist), "There are some \"NA\" values in the data. Please remove them")
+  expect_error(classical_mds(x = x, r = 4), "NA values not allowed in 'x'")
 })

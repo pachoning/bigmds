@@ -4,7 +4,7 @@
 \alias{fast_mds}
 \title{Fast MDS}
 \usage{
-fast_mds(x, l, s_points, r, n_cores = 1, dist_fn = stats::dist, ...)
+fast_mds(x, l, s_points, r, n_cores)
 }
 \arguments{
 \item{x}{A matrix with \eqn{n} individuals (rows) and \eqn{k} variables (columns).}
@@ -14,15 +14,11 @@ fast_mds(x, l, s_points, r, n_cores = 1, dist_fn = stats::dist, ...)
 size for which classical MDS is applicable, then \code{l}\eqn{\leq \bar{l}}.}
 
 \item{s_points}{Number of points used to align the MDS solutions obtained by
-the division of \code{x} into \eqn{p} submatrices. Recommended value: \code{2·r}.}
+the division of \code{x} into \eqn{p} submatrices. Recommended value: \code{5·r}.}
 
 \item{r}{Number of principal coordinates to be extracted.}
 
 \item{n_cores}{Number of cores wanted to use to run the algorithm.}
-
-\item{dist_fn}{Distance function used to compute the distance between the rows.}
-
-\item{...}{Further arguments passed to \code{dist_fn} function.}
 }
 \value{
 Returns a list containing the following elements:
@@ -35,15 +31,6 @@ we are performing a dimensionality reduction, \code{r}\eqn{<<k}}
 \eqn{\bar{\lambda}_i = 1/p \sum_{j=1}^{p}\lambda_i^j/n_j},
 being \eqn{\lambda_i^j} the \eqn{i-th} eigenvalue from partition \eqn{j}
 and \eqn{n_j} the size of the partition \eqn{j}.}
-\item{GOF}{A numeric vector of length 2.
-
-The first element corresponds to
-\eqn{1/n \sum_{j=1}^{p}n_jG_1^j}, where
-\eqn{G_1^j = \sum_{i = 1}^{r} \lambda_{i}^{j}/ \sum_{i = 1}^{n-1} |\lambda_{i}^{j}|}.
-
-The second element corresponds to
-\eqn{1/n \sum_{j=1}^{p}n_jG_2^j} where
-\eqn{G_2^j = \sum_{i = 1}^{r} \lambda_{i}^{j}/ \sum_{i = 1}^{n-1} max(\lambda_{i}^{j}, 0).}}
 }
 }
 \description{
@@ -68,30 +55,17 @@ using a Procrustes transformation.
 }
 \examples{
 set.seed(42)
-x <- matrix(data = rnorm(4*10000), nrow = 10000) \%*\% diag(c(9, 4, 1, 1))
-mds <- fast_mds(x = x, l = 200, s_points = 2*2, r = 2, n_cores = 1, dist_fn = stats::dist)
+x <- matrix(data = rnorm(4 * 10000), nrow = 10000) \%*\% diag(c(9, 4, 1, 1))
+mds <- fast_mds(x = x, l = 200, s_points = 5 * 2, r = 2, n_cores = 1)
 head(mds$points)
 mds$eigen
-mds$GOF
-points <- mds$points
-plot(x[1:10, 1],
-     x[1:10, 2],
-     xlim = range(c(x[1:10,1],points[1:10,1])),
-     ylim = range(c(x[1:10,2], points[1:10,2])),
-     pch = 19,
-     col = "green")
-text(x[1:10, 1], x[1:10, 2], labels=1:10)
-points(points[1:10, 1], points[1:10, 2], pch = 19, col = "orange")
-text(points[1:10, 1], points[1:10, 2], labels=1:10)
-abline(v = 0, lwd=3, lty=2)
-abline(h = 0, lwd=3, lty=2)
 
 }
 \references{
 Delicado P. and C. Pachón-García (2021). \emph{Multidimensional Scaling for Big Data}.
 \url{https://arxiv.org/abs/2007.11919}.
 
-Yang, T., J. Liu, L. McMillan, and W.Wang (2006). \emph{A fast approximation to multidimensional scaling}.
+Yang, T., J. Liu, L. McMillan and W.Wang (2006). \emph{A fast approximation to multidimensional scaling}.
 In Proceedings of the ECCV Workshop on Computation Intensive Methods for Computer Vision (CIMCV).
 
 Borg, I. and P. Groenen (2005). \emph{Modern Multidimensional Scaling: Theory and Applications}. Springer.

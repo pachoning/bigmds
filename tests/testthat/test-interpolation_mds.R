@@ -19,7 +19,7 @@ test_that("Number of partition for interpolation MDS is 1 when n < l", {
 test_that("Partition for interpolation MDS fails when l < r", {
   expect_error(
     get_partitions_for_interpolation(n = 100, n_obs = 10, l = 10, r = 11),
-    "\"l\" must be greater than \"r\""
+    "l must be greater than r"
   )
 })
 
@@ -31,7 +31,7 @@ test_that("interpolation MDS returns a valid MDS configuration when n > l", {
   s_points <- 2*r
   diag_mat <- sqrt(diag(c(rep(15, r), rep(1, n_cols - r))))
   x <- matrix(data = rnorm(n_cols*n), nrow = n) %*% diag_mat
-  cmds <- interpolation_mds(x = x, l = l, r = r)
+  cmds <- interpolation_mds(x = x, l = l, r = r, n_cores = 1)
   cmds_proc <- perform_procrustes(x = cmds$points,
                                   target = x[, 1:r],
                                   matrix_to_transform = cmds$points, 

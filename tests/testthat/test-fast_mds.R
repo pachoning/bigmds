@@ -4,20 +4,6 @@ test_that("Partitions for fast MDS returns a valid partition dataset", {
   expect_equal(p, 20)
 })
 
-test_that("Partitions for fast MDS returns an error when n < s_points", {
-  expect_error(
-    get_partitions_for_fast(n = 10, l = 10, s_points = 15, r = 100),
-    "Number of rows of \"x\" must be greater than \"s_points\""
-  )
-})
-
-test_that("Partitions for fast MDS returns an error when n*s_points/l < r", {
-  expect_error(
-    get_partitions_for_fast(n = 10, l = 100, s_points = 5, r = 100),
-    "Number of rows of \"x\" must be greater than \"r\" x \"l\"/\"s_points\""
-  )
-})
-
 test_that("fast MDS returns a valid MDS configuration when n > l", {
   n <- 1000
   n_cols <- 10
@@ -26,7 +12,7 @@ test_that("fast MDS returns a valid MDS configuration when n > l", {
   s_points <- 2*r
   diag_mat <- sqrt(diag(c(rep(15, r), rep(1, n_cols - r))))
   x <- matrix(data = rnorm(n_cols*n), nrow = n) %*% diag_mat
-  cmds <- fast_mds(x = x, l = l, s_points = s_points, r = r)
+  cmds <- fast_mds(x = x, l = l, s_points = s_points, r = r, n_cores = 1)
   cmds_proc <- perform_procrustes(x = cmds$points,
                                   target = x[, 1:r],
                                   matrix_to_transform = cmds$points, 
@@ -44,7 +30,7 @@ test_that("fast MDS returns a valid MDS configuration when n = l", {
   s_points <- 2*r
   diag_mat <- sqrt(diag(c(rep(15, r), rep(1, n_cols - r))))
   x <- matrix(data = rnorm(n_cols*n), nrow = n) %*% diag_mat
-  cmds <- fast_mds(x = x, l = l, s_points = s_points, r = r)
+  cmds <- fast_mds(x = x, l = l, s_points = s_points, r = r, n_cores = 1)
   cmds_proc <- perform_procrustes(x = cmds$points,
                                   target = x[, 1:r],
                                   matrix_to_transform = cmds$points, 
