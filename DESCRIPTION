@@ -1,6 +1,6 @@
 Package: bigmds
 Title: Multidimensional Scaling for Big Data
-Version: 2.0.1
+Version: 3.0.0
 Authors@R: 
     c(person(given = "Cristian",
              family = "Pachón García",
@@ -20,8 +20,8 @@ Description: MDS is a statistic tool for reduction of dimensionality, using as i
         - Landmark MDS proposed by De Silva V. and JB. Tenenbaum (2004).
         - Interpolation MDS proposed by Delicado P. and C. Pachón-García (2021)
         <arXiv:2007.11919> (original proposal).
-        - Reduced MDS proposel by Paradis E (2018).
-        - Pivot MDS prposed by Brandes U. and C. Pich (2007)
+        - Reduced MDS proposed by Paradis E (2018).
+        - Pivot MDS proposed by Brandes U. and C. Pich (2007)
         - Divide-and-conquer MDS proposed by Delicado P. and C. Pachón-García (2021)
         <arXiv:2007.11919> (original proposal).
         - Fast MDS, proposed by Yang, T., J. Liu, L. McMillan and W. Wang (2006).
