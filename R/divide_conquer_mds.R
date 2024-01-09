@@ -55,6 +55,7 @@
 #'Borg, I. and P. Groenen (2005). *Modern Multidimensional Scaling: Theory and Applications*. Springer.
 #'
 #'@importFrom parallel mclapply
+#'@importFrom stats cov
 #'
 #'@export
 divide_conquer_mds <- function(x, l, c_points, r, n_cores) {
@@ -99,8 +100,8 @@ divide_conquer_mds <- function(x, l, c_points, r, n_cores) {
     order_idx <- order(order_idx)
     mds_matrix <- mds_matrix[order_idx, , drop = FALSE]
     mds_matrix <- apply(mds_matrix, MARGIN = 2, FUN = function(x) x - mean(x))
-    cov_mds_matrix <- cov(mds_matrix)
-    svd_mds_matrix <- eigen(cov_mds_matrix)
+    cov_mds_matrix <- stats::cov(mds_matrix)
+    svd_mds_matrix <- base::eigen(cov_mds_matrix)
     eigenvectors_cov <- svd_mds_matrix$vectors
     mds_matrix <- mds_matrix %*% eigenvectors_cov
     
@@ -237,8 +238,8 @@ divide_conquer_mds <- function(x, l, c_points, r, n_cores) {
     order_idx <- order(order_idx)
     mds_matrix <- mds_matrix[order_idx, , drop = FALSE]
     mds_matrix <- apply(mds_matrix, MARGIN = 2, FUN = function(x) x - mean(x))
-    cov_mds_matrix <- cov(mds_matrix)
-    svd_mds_matrix <- eigen(cov_mds_matrix)
+    cov_mds_matrix <- stats::cov(mds_matrix)
+    svd_mds_matrix <- base::eigen(cov_mds_matrix)
     eigenvectors_cov <- svd_mds_matrix$vectors
     mds_matrix <- mds_matrix %*% eigenvectors_cov
     

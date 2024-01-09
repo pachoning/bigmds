@@ -1,11 +1,11 @@
 #'@title Landmark MDS
 #'
 #'@description Landmark MDS (LMDS) algorithm applies first classical MDS to a 
-#'subset of the data (\textit{landmark points}) and then the remaining individuals are 
+#'subset of the data (*landmark points*) and then the remaining individuals are 
 #'projected onto the landmark low dimensional configuration using a 
 #'distance-based triangulation procedure.
 #'
-#'@details LMDS applies first classical MDS to a subset of the data (\textit{landmark points}). Then,
+#'@details LMDS applies first classical MDS to a subset of the data (*landmark points*). Then,
 #'it uses a distance-based triangulation procedure to project the non-landmark individuals. This 
 #'distance-based triangulation procedure coincides with  *Gower's interpolation formula*. 
 #'
@@ -48,6 +48,7 @@
 #'
 #'@importFrom pracma distmat
 #'@importFrom svd trlan.eigen
+#'@importFrom stats cov
 #'
 #'@export
 landmark_mds <- function (x, num_landmarks, r) {
@@ -108,7 +109,7 @@ lmds_config <- function (dist_landmark, idx_landmark, x_landmark, r, rescale = T
   points_inv <- evec/rep(sqrt(ev), each = num_landmarks)
   mds_config <- (-t(dist_landmark^2 - rep(mu_row_lm, n_points))/2) %*% points_inv
   mds_config <- apply(mds_config, MARGIN = 2, FUN = function(y) y - mean(y))
-  mds_config <- mds_config %*% eigen(cov(mds_config))$vectors
+  mds_config <- mds_config %*% base::eigen(stats::cov(mds_config))$vectors
   mds <- list()
   mds$points <- mds_config
   mds$eigen <- ev/num_landmarks

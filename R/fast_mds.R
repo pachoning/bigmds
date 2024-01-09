@@ -56,6 +56,7 @@
 #'Borg, I. and P. Groenen (2005). *Modern Multidimensional Scaling: Theory and Applications*. Springer.
 #'
 #'@importFrom parallel mclapply
+#'@importFrom stats cov
 #'
 #'@export
 fast_mds <- function(x, l, s_points, r, n_cores) {
@@ -160,7 +161,7 @@ fast_mds <- function(x, l, s_points, r, n_cores) {
     idx_order <- order(idx_order)
     mds <-do.call(rbind, procrustes)
     mds <- mds[idx_order, ,drop = FALSE]
-    mds <- mds %*% eigen(cov(mds))$vectors
+    mds <- mds %*% base::eigen(stats::cov(mds))$vectors
     eigen <- Reduce(`+`, mds_partition_eigen)/num_partition
     return(list(points = mds, eigen = eigen))
   }

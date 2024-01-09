@@ -56,6 +56,7 @@
 #'mds$eigen
 #'
 #'@importFrom parallel mclapply
+#'@importFrom stats cov
 #'
 #'@export
 reduced_mds <- function(x, l, r, n_cores) {
@@ -95,6 +96,9 @@ reduced_mds <- function(x, l, r, n_cores) {
   mds_config[idx, ] <- mds_initial
   # Populate final mds with remaining mds
   mds_config[idx_remaining, ] <- mds_remaining
+  # Normalise
+  mds_config <- apply(mds_config, MARGIN = 2, FUN = function(y) y - mean(y))
+  mds_config <- mds_config %*% base::eigen(stats::cov(mds_config))$vectors
   # Return final object
   conf <- list()
   conf$points <- mds_config

@@ -30,12 +30,12 @@ from applying classical MDS to the first data subset.}
 }
 \description{
 Landmark MDS (LMDS) algorithm applies first classical MDS to a
-subset of the data (\textit{landmark points}) and then the remaining individuals are
+subset of the data (\emph{landmark points}) and then the remaining individuals are
 projected onto the landmark low dimensional configuration using a
 distance-based triangulation procedure.
 }
 \details{
-LMDS applies first classical MDS to a subset of the data (\textit{landmark points}). Then,
+LMDS applies first classical MDS to a subset of the data (\emph{landmark points}). Then,
 it uses a distance-based triangulation procedure to project the non-landmark individuals. This
 distance-based triangulation procedure coincides with  \emph{Gower's interpolation formula}.
 

@@ -29,7 +29,15 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-Suggests: 
+Depends:
+    R (>= 3.0.2)
+Suggests:
     testthat
+Imports:
+    pracma,
+    svd,
+    corpcor,
+    parallel,
+    stats
 URL: https://github.com/pachoning/bigmds
 BugReports: https://github.com/pachoning/bigmds/issues

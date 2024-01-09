@@ -59,6 +59,7 @@
 #'
 #'@importFrom parallel mclapply
 #'@importFrom pracma distmat
+#'@importFrom stats cov
 #'
 #'@export
 interpolation_mds <- function(x, l, r, n_cores) {
@@ -112,7 +113,7 @@ interpolation_mds <- function(x, l, r, n_cores) {
     idx_all <- order(idx_all)
     mds_points <- mds_points[idx_all, , drop = FALSE]
     mds_points <- apply(mds_points, MARGIN = 2, FUN = function(y) y - mean(y))
-    mds_points <- mds_points %*% eigen(cov(mds_points))$vectors
+    mds_points <- mds_points %*% base::eigen(stats::cov(mds_points))$vectors
     list_to_return <- list(points = mds_points, eigen = eigen_v)
   }
   
